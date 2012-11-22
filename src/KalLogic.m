@@ -37,6 +37,7 @@
     [monthAndYearFormatter setDateFormat:@"LLLL yyyy"];
     [self moveToMonthForDate:date];
   }
+  
   return self;
 }
 
