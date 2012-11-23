@@ -136,8 +136,8 @@ static const CGFloat kMonthLabelHeight = 17.f;
     weekdayLabel.textColor = [UIColor colorWithRed:0.3f green:0.3f blue:0.3f alpha:1.f];
     weekdayLabel.shadowColor = [UIColor whiteColor];
     weekdayLabel.shadowOffset = CGSizeMake(0.f, 1.f);
-    weekdayLabel.text = [weekdayNames objectAtIndex:i];
-    [weekdayLabel setAccessibilityLabel:[fullWeekdayNames objectAtIndex:i]];
+    weekdayLabel.text = weekdayNames[i];
+    [weekdayLabel setAccessibilityLabel:fullWeekdayNames[i]];
     [headerView addSubview:weekdayLabel];
   }
 }
@@ -191,7 +191,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
     shadowView.top = gridBottom;
     
   } else if ([keyPath isEqualToString:@"selectedMonthNameAndYear"]) {
-    [self setHeaderTitleText:[change objectForKey:NSKeyValueChangeNewKey]];
+    [self setHeaderTitleText:change[NSKeyValueChangeNewKey]];
     
   } else {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

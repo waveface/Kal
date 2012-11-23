@@ -126,7 +126,7 @@
   self.daysInSelectedMonth = [self calculateDaysInSelectedMonth];
   self.daysInFinalWeekOfPreviousMonth = [self calculateDaysInFinalWeekOfPreviousMonth];
   self.daysInFirstWeekOfFollowingMonth = [self calculateDaysInFirstWeekOfFollowingMonth];
-  KalDate *from = [self.daysInFinalWeekOfPreviousMonth count] > 0 ? [self.daysInFinalWeekOfPreviousMonth objectAtIndex:0] : [self.daysInSelectedMonth objectAtIndex:0];
+  KalDate *from = [self.daysInFinalWeekOfPreviousMonth count] > 0 ? (self.daysInFinalWeekOfPreviousMonth)[0] : (self.daysInSelectedMonth)[0];
   KalDate *to = [self.daysInFirstWeekOfFollowingMonth count] > 0 ? [self.daysInFirstWeekOfFollowingMonth lastObject] : [self.daysInSelectedMonth lastObject];
   self.fromDate = [[from NSDate] cc_dateByMovingToBeginningOfDay];
   self.toDate = [[to NSDate] cc_dateByMovingToEndOfDay];

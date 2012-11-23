@@ -40,7 +40,7 @@ extern const CGSize kTileSize;
   
   for (int i=0; i<3; i++) {
     for (KalDate *d in dates[i]) {
-      KalTileView *tile = [self.subviews objectAtIndex:tileNum];
+      KalTileView *tile = (self.subviews)[tileNum];
       [tile resetState];
       tile.date = d;
       tile.type = dates[i] != mainDates
