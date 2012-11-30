@@ -33,6 +33,12 @@
 - (id)initForDate:(NSDate *)date
 {
   if ((self = [super init])) {
+    monthFormatter = [[NSDateFormatter alloc] init];
+    [monthFormatter setDateFormat:@"MMMM"];
+    
+    yearFormatter = [[NSDateFormatter alloc] init];
+    [yearFormatter setDateFormat:@"yyyy"];
+    
     monthAndYearFormatter = [[NSDateFormatter alloc] init];
     [monthAndYearFormatter setDateFormat:@"LLLL yyyy"];
     [self moveToMonthForDate:date];
@@ -65,6 +71,22 @@
 - (NSString *)selectedMonthNameAndYear;
 {
   return [monthAndYearFormatter stringFromDate:self.baseDate];
+}
+
+- (NSString *)selectedMonthName;
+{
+  NSString *monthName = [monthFormatter stringFromDate:self.baseDate];
+  NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+  
+  if ([language isEqualToString:@"en"])
+    return [monthName uppercaseString];
+  
+  return monthName;
+}
+
+- (NSString *)selectedYear;
+{
+  return [yearFormatter stringFromDate:self.baseDate];
 }
 
 #pragma mark Low-level implementation details

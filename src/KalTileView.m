@@ -43,25 +43,25 @@ extern const CGSize kTileSize;
   if ([self isToday] && self.selected) {
     [[[UIImage imageNamed:@"Kal.bundle/kal_tile_today_selected.png"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
     textColor = [UIColor whiteColor];
-    shadowColor = [UIColor blackColor];
+//    shadowColor = [UIColor blackColor];
     markerImage = [UIImage imageNamed:@"Kal.bundle/kal_marker_today.png"];
   } else if ([self isToday] && !self.selected) {
     [[[UIImage imageNamed:@"Kal.bundle/kal_tile_today.png"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
     textColor = [UIColor whiteColor];
-    shadowColor = [UIColor blackColor];
+//    shadowColor = [UIColor blackColor];
     markerImage = [UIImage imageNamed:@"Kal.bundle/kal_marker_today.png"];
   } else if (self.selected) {
     [[[UIImage imageNamed:@"Kal.bundle/kal_tile_selected.png"] stretchableImageWithLeftCapWidth:1 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
     textColor = [UIColor whiteColor];
-    shadowColor = [UIColor blackColor];
+//    shadowColor = [UIColor blackColor];
     markerImage = [UIImage imageNamed:@"Kal.bundle/kal_marker_selected.png"];
   } else if (self.belongsToAdjacentMonth) {
     textColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Kal.bundle/kal_tile_dim_text_fill.png"]];
-    shadowColor = nil;
+//    shadowColor = nil;
     markerImage = [UIImage imageNamed:@"Kal.bundle/kal_marker_dim.png"];
   } else {
     textColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Kal.bundle/kal_tile_text_fill.png"]];
-    shadowColor = [UIColor whiteColor];
+//    shadowColor = [UIColor whiteColor];
     markerImage = [UIImage imageNamed:@"Kal.bundle/kal_marker.png"];
   }
   

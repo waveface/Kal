@@ -29,6 +29,8 @@
   NSArray *daysInFinalWeekOfPreviousMonth;
   NSArray *daysInFirstWeekOfFollowingMonth;
   NSDateFormatter *monthAndYearFormatter;
+  NSDateFormatter *monthFormatter;
+  NSDateFormatter *yearFormatter;
 }
 
 @property (nonatomic, strong) NSDate *baseDate;    // The first day of the currently selected month
@@ -38,6 +40,8 @@
 @property (nonatomic, strong, readonly) NSArray *daysInFinalWeekOfPreviousMonth;  // array of KalDate
 @property (nonatomic, strong, readonly) NSArray *daysInFirstWeekOfFollowingMonth; // array of KalDate
 @property (unsafe_unretained, nonatomic, readonly) NSString *selectedMonthNameAndYear; // localized (e.g. "September 2010" for USA locale)
+@property (unsafe_unretained, nonatomic, readonly) NSString *selectedMonthName;
+@property (unsafe_unretained, nonatomic, readonly) NSString *selectedYear;
 
 - (id)initForDate:(NSDate *)date; // designated initializer.
 

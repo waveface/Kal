@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2009 Keith Lazuka
  * License: http://www.opensource.org/licenses/mit-license.html
  */
@@ -190,6 +190,13 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
   tableView.delegate = delegate;
   [kalView selectDate:[KalDate dateFromNSDate:self.initialDate]];
   [self reloadData];
+}
+
+- (void)viewDidLoad
+{
+  [super viewDidLoad];
+  tableView.backgroundColor = [UIColor colorWithRed:0.89f green:0.89f blue:0.89f alpha:1.f];
+	tableView.separatorColor = [UIColor whiteColor];
 }
 
 - (void)viewDidUnload
