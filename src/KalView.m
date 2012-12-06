@@ -88,7 +88,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   const CGFloat kChangeMonthButtonWidth = 46.0f;
   const CGFloat kChangeMonthButtonHeight = 30.0f;
   const CGFloat kMonthLabelWidth = 100.f;
-  const CGFloat kYearLabelWidth = 40.f;
+  const CGFloat kYearLabelWidth = 36.f;
   const CGFloat kHeaderVerticalAdjust = 5.f;
   
   // Header background gradient
@@ -126,7 +126,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   [headerView addSubview:headerMonthTitleLabel];
   
   // Create the next month button on the right side of the view
-  CGRect nextMonthButtonFrame = CGRectMake(self.left + kChangeMonthButtonWidth + kMonthLabelWidth,
+  CGRect nextMonthButtonFrame = CGRectMake(kChangeMonthButtonWidth + kMonthLabelWidth,
                                            0,
                                            kChangeMonthButtonWidth,
                                            kChangeMonthButtonHeight);
@@ -139,7 +139,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   [headerView addSubview:nextMonthButton];
   
   // Create the previous month button on the left side of the view
-  CGRect previousYearButtonFrame = CGRectMake(self.width - kChangeMonthButtonWidth * 2 - kYearLabelWidth,
+  CGRect previousYearButtonFrame = CGRectMake(kChangeMonthButtonWidth * 2 + kMonthLabelWidth,
                                               0,
                                               kChangeMonthButtonWidth,
                                               kChangeMonthButtonHeight);
@@ -152,7 +152,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   [headerView addSubview:previousYearButton];
   
   // Draw the selected month name centered and at the top of the view
-  CGRect yearLabelFrame = CGRectMake(self.width - kChangeMonthButtonWidth - kYearLabelWidth,
+  CGRect yearLabelFrame = CGRectMake(kChangeMonthButtonWidth * 3 + kMonthLabelWidth,
                                      kHeaderVerticalAdjust,
                                      kMonthLabelWidth,
                                      kMonthLabelHeight);
@@ -165,7 +165,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   [headerView addSubview:headerYearTitleLabel];
   
   // Create the next month button on the right side of the view
-  CGRect nextYearButtonFrame = CGRectMake(self.width - kChangeMonthButtonWidth,
+  CGRect nextYearButtonFrame = CGRectMake(kChangeMonthButtonWidth * 3 + kMonthLabelWidth + kYearLabelWidth,
                                           0,
                                           kChangeMonthButtonWidth,
                                           kChangeMonthButtonHeight);
@@ -184,6 +184,8 @@ static const CGFloat kMonthLabelHeight = 17.f;
   NSUInteger i = firstWeekday - 1;
   for (CGFloat xOffset = 0.f; xOffset < headerView.width; xOffset += 46.f, i = (i+1)%7) {
     CGRect weekdayFrame = CGRectMake(xOffset, 30.f, 46.f, kHeaderHeight - 29.f);
+    if (i == 6)
+      weekdayFrame = CGRectMake(xOffset, 30.f, 44.f, kHeaderHeight - 29.f);
     UILabel *weekdayLabel = [[UILabel alloc] initWithFrame:weekdayFrame];
     weekdayLabel.backgroundColor = [UIColor colorWithRed:0.757f green:0.757f blue:0.757f alpha:1.f];
     weekdayLabel.font = [UIFont boldSystemFontOfSize:10.f];
@@ -225,6 +227,8 @@ static const CGFloat kMonthLabelHeight = 17.f;
   
   // Trigger the initial KVO update to finish the contentView layout
   [gridView sizeToFit];
+  gridView.width = 320;
+  
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -244,11 +248,12 @@ static const CGFloat kMonthLabelHeight = 17.f;
     CGFloat gridBottom = gridView.top + gridView.height;
     CGRect frame = tableView.frame;
     frame.origin.y = gridBottom;
+    frame.size.width = 320;
     if (frame.size.height < tableView.superview.height - gridBottom)
       frame.size.height = tableView.superview.height - gridBottom;
     tableView.frame = frame;
     shadowView.top = gridBottom;
-  
+    
   } else if ([keyPath isEqualToString:@"selectedMonthName"]) {
     [self setHeaderMonthTitleText:change[NSKeyValueChangeNewKey]];
   
@@ -270,21 +275,21 @@ static const CGFloat kMonthLabelHeight = 17.f;
 - (void)setHeaderMonthTitleText:(NSString *)text
 {
   const CGFloat kChangeMonthButtonWidth = 46.0f;
-  const CGFloat kMonthLabelWidth = 120.0f;
+  const CGFloat kMonthLabelWidth = 100.f;
   
   [headerMonthTitleLabel setText:text];
   [headerMonthTitleLabel sizeToFit];
-  headerMonthTitleLabel.left = floorf(kMonthLabelWidth/2.f + kChangeMonthButtonWidth - headerMonthTitleLabel.width/2.f);
+  headerMonthTitleLabel.left = kChangeMonthButtonWidth + kMonthLabelWidth/2.f - headerMonthTitleLabel.width/2.f;
 }
 
 - (void)setHeaderYearTitleText:(NSString *)text
 {
   const CGFloat kChangeMonthButtonWidth = 46.0f;
-  const CGFloat kYearLabelWidth = 60.f;
+  const CGFloat kMonthLabelWidth = 100.f;
   
   [headerYearTitleLabel setText:text];
   [headerYearTitleLabel sizeToFit];
-  headerYearTitleLabel.left = floorf(self.width - kChangeMonthButtonWidth - kYearLabelWidth + headerYearTitleLabel.width/2.f);
+  headerYearTitleLabel.left = kChangeMonthButtonWidth * 3 + kMonthLabelWidth;
 }
 
 - (void)jumpToSelectedMonth { [gridView jumpToSelectedMonth]; }
