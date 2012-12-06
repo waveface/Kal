@@ -34,39 +34,44 @@ extern const CGSize kTileSize;
   UIFont *font = [UIFont boldSystemFontOfSize:fontSize];
   UIColor *shadowColor = nil;
   UIColor *textColor = nil;
-  UIImage *markerImage = nil;
+  UIImage *markerEventImage = [UIImage imageNamed:@"dotR"];
+  UIImage *markerPhotoImage = [UIImage imageNamed:@"dotLB"];
   CGContextSelectFont(ctx, [font.fontName cStringUsingEncoding:NSUTF8StringEncoding], fontSize, kCGEncodingMacRoman);
       
   CGContextTranslateCTM(ctx, 0, kTileSize.height);
   CGContextScaleCTM(ctx, 1, -1);
   
   if ([self isToday] && self.selected) {
-    [[[UIImage imageNamed:@"Kal.bundle/kal_tile_today_selected.png"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
+    [[[UIImage imageNamed:@"tile_today_selected"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
     textColor = [UIColor whiteColor];
-    shadowColor = [UIColor blackColor];
-    markerImage = [UIImage imageNamed:@"Kal.bundle/kal_marker_today.png"];
   } else if ([self isToday] && !self.selected) {
-    [[[UIImage imageNamed:@"Kal.bundle/kal_tile_today.png"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
+    [[[UIImage imageNamed:@"tile_today"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
     textColor = [UIColor whiteColor];
-    shadowColor = [UIColor blackColor];
-    markerImage = [UIImage imageNamed:@"Kal.bundle/kal_marker_today.png"];
   } else if (self.selected) {
-    [[[UIImage imageNamed:@"Kal.bundle/kal_tile_selected.png"] stretchableImageWithLeftCapWidth:1 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
+    [[[UIImage imageNamed:@"tile_selected"] stretchableImageWithLeftCapWidth:1 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
     textColor = [UIColor whiteColor];
-    shadowColor = [UIColor blackColor];
-    markerImage = [UIImage imageNamed:@"Kal.bundle/kal_marker_selected.png"];
   } else if (self.belongsToAdjacentMonth) {
-    textColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Kal.bundle/kal_tile_dim_text_fill.png"]];
-    shadowColor = nil;
-    markerImage = [UIImage imageNamed:@"Kal.bundle/kal_marker_dim.png"];
+    textColor = [UIColor lightGrayColor];
   } else {
-    textColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Kal.bundle/kal_tile_text_fill.png"]];
-    shadowColor = [UIColor whiteColor];
-    markerImage = [UIImage imageNamed:@"Kal.bundle/kal_marker.png"];
+    textColor = [UIColor darkGrayColor];
   }
   
-  if (flags.marked)
-    [markerImage drawInRect:CGRectMake(21.f, 5.f, 4.f, 5.f)];
+  NSInteger numOfMarker = flags.markedEvents + flags.markedPhotos;
+  if (numOfMarker) {
+    const int kTileWidth = 46.f;
+    const int kDotWidth = 4.f;
+    const int kSpace = 1.f;
+    NSInteger numOfDrawedDot = 0;
+    
+    if (flags.markedEvents) {
+      [markerEventImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f, 5.f, 4.f, 4.f)];
+      numOfDrawedDot += 1;
+    }
+    if (flags.markedPhotos) {
+      [markerPhotoImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, 4.f, 4.f)];
+      numOfDrawedDot += 1;
+    }
+  }
   
   NSUInteger n = [self.date day];
   NSString *dayText = [NSString stringWithFormat:@"%lu", (unsigned long)n];
@@ -102,6 +107,8 @@ extern const CGSize kTileSize;
   flags.highlighted = NO;
   flags.selected = NO;
   flags.marked = NO;
+  flags.markedEvents = NO;
+  flags.markedPhotos = NO;
 }
 
 - (void)setDate:(KalDate *)aDate
@@ -159,6 +166,28 @@ extern const CGSize kTileSize;
     return;
   
   flags.marked = marked;
+  [self setNeedsDisplay];
+}
+
+- (BOOL)isMarkedEvents { return flags.markedEvents; }
+
+- (void)setMarkedEvents:(BOOL)markedEvents
+{
+  if (flags.markedEvents == markedEvents)
+    return;
+  
+  flags.markedEvents = markedEvents;
+  [self setNeedsDisplay];
+}
+
+- (BOOL)isMarkedPhotos { return flags.markedPhotos; }
+
+- (void)setMarkedPhotos:(BOOL)markedPhotos
+{
+  if (flags.markedPhotos == markedPhotos)
+    return;
+  
+  flags.markedPhotos = markedPhotos;
   [self setNeedsDisplay];
 }
 

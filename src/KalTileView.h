@@ -22,6 +22,8 @@ typedef char KalTileType;
     unsigned int selected : 1;
     unsigned int highlighted : 1;
     unsigned int marked : 1;
+    unsigned int markedEvents : 1;
+    unsigned int markedPhotos : 1;
     unsigned int type : 2;
   } flags;
 }
@@ -30,6 +32,8 @@ typedef char KalTileType;
 @property (nonatomic, getter=isHighlighted) BOOL highlighted;
 @property (nonatomic, getter=isSelected) BOOL selected;
 @property (nonatomic, getter=isMarked) BOOL marked;
+@property (nonatomic, getter=ismarkedEvents) BOOL markedEvents;
+@property (nonatomic, getter=ismarkedPhotos) BOOL markedPhotos;
 @property (nonatomic) KalTileType type;
 
 - (void)resetState;

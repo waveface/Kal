@@ -122,6 +122,22 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
   [self reloadData];
 }
 
+- (void)showPreviousYear
+{
+  [self clearTable];
+  [logic retreatToPreviousYear];
+  [[self calendarView] slideDown];
+  [self reloadData];
+}
+
+- (void)showFollowingYear
+{
+  [self clearTable];
+  [logic advanceToFollowingYear];
+  [[self calendarView] slideUp];
+  [self reloadData];
+}
+
 // -----------------------------------------
 #pragma mark KalDataSourceCallbacks protocol
 
@@ -129,8 +145,11 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 {
   NSArray *markedDates = [theDataSource markedDatesFrom:logic.fromDate to:logic.toDate];
   NSMutableArray *dates = [markedDates mutableCopy];
-  for (int i=0; i<[dates count]; i++)
-    dates[i] = [KalDate dateFromNSDate:dates[i]];
+  for (NSMutableDictionary *item in dates) {
+    NSDate *itemNSdate = item[@"date"];
+    if ([itemNSdate isKindOfClass:[NSDate class]])
+      item[@"date"] = [KalDate dateFromNSDate:itemNSdate];
+  }
   
   [[self calendarView] markTilesForDates:dates];
   [self didSelectDate:self.calendarView.selectedDate];
@@ -188,6 +207,8 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
   tableView = kalView.tableView;
   tableView.dataSource = dataSource;
   tableView.delegate = delegate;
+  tableView.backgroundColor = [UIColor colorWithRed:0.89f green:0.89f blue:0.89f alpha:1.f];
+  tableView.separatorColor = [UIColor whiteColor];
   [kalView selectDate:[KalDate dateFromNSDate:self.initialDate]];
   [self reloadData];
 }
@@ -208,6 +229,11 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 {
   [super viewDidAppear:animated];
   [tableView flashScrollIndicators];
+
+  CGRect frame = tableView.frame;
+  frame.size = tableView.contentSize;
+  tableView.frame = frame;
+  
 }
 
 #pragma mark -

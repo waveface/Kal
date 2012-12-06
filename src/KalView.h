@@ -40,6 +40,8 @@
 @interface KalView : UIView
 {
   UILabel *headerTitleLabel;
+  UILabel *headerMonthTitleLabel;
+  UILabel *headerYearTitleLabel;
   KalGridView *gridView;
   UITableView *tableView;
   UIImageView *shadowView;
@@ -73,6 +75,8 @@
 
 - (void)showPreviousMonth;
 - (void)showFollowingMonth;
+- (void)showPreviousYear;
+- (void)showFollowingYear;
 - (void)didSelectDate:(KalDate *)date;
 
 @end
