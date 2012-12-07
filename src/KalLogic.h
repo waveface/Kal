@@ -40,13 +40,15 @@
 @property (nonatomic, strong, readonly) NSArray *daysInFinalWeekOfPreviousMonth;  // array of KalDate
 @property (nonatomic, strong, readonly) NSArray *daysInFirstWeekOfFollowingMonth; // array of KalDate
 @property (unsafe_unretained, nonatomic, readonly) NSString *selectedMonthNameAndYear; // localized (e.g. "September 2010" for USA locale)
-@property (unsafe_unretained, nonatomic, readonly) NSString *selectedMonthName;
-@property (unsafe_unretained, nonatomic, readonly) NSString *selectedYear;
+@property (nonatomic, readonly) NSString *selectedMonthName;
+@property (nonatomic, readonly) NSString *selectedYear;
 
 - (id)initForDate:(NSDate *)date; // designated initializer.
 
 - (void)retreatToPreviousMonth;
 - (void)advanceToFollowingMonth;
+- (void)retreatToPreviousYear;
+- (void)advanceToFollowingYear;
 - (void)moveToMonthForDate:(NSDate *)date;
 
 @end

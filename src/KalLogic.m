@@ -30,6 +30,16 @@
   return [NSSet setWithObjects:@"baseDate", nil];
 }
 
++ (NSSet *)keyPathsForValuesAffectingSelectedMonthName
+{
+  return [NSSet setWithObjects:@"baseDate", nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingSelectedYear
+{
+  return [NSSet setWithObjects:@"baseDate", nil];
+}
+
 - (id)initForDate:(NSDate *)date
 {
   if ((self = [super init])) {
@@ -68,6 +78,16 @@
   [self moveToMonthForDate:[self.baseDate cc_dateByMovingToFirstDayOfTheFollowingMonth]];
 }
 
+- (void)retreatToPreviousYear;
+{
+  [self moveToMonthForDate:[self.baseDate cc_dateByMovingToFirstDayOfSameMonthOfThePreviousYear]];
+}
+
+- (void)advanceToFollowingYear;
+{
+  [self moveToMonthForDate:[self.baseDate cc_dateByMovingToFirstDayOfSameMonthOfTheFollowingYear]];
+}
+
 - (NSString *)selectedMonthNameAndYear;
 {
   return [monthAndYearFormatter stringFromDate:self.baseDate];
@@ -76,9 +96,8 @@
 - (NSString *)selectedMonthName;
 {
   NSString *monthName = [monthFormatter stringFromDate:self.baseDate];
-  NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-  
-  if ([language isEqualToString:@"en"])
+  NSString *lang = [[NSLocale preferredLanguages] objectAtIndex:0];
+  if ([lang isEqualToString:@"en"])
     return [monthName uppercaseString];
   
   return monthName;

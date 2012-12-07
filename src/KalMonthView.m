@@ -58,7 +58,7 @@ extern const CGSize kTileSize;
 - (void)drawRect:(CGRect)rect
 {
   CGContextRef ctx = UIGraphicsGetCurrentContext();
-  CGContextDrawTiledImage(ctx, (CGRect){CGPointZero,kTileSize}, [[UIImage imageNamed:@"Kal.bundle/kal_tile.png"] CGImage]);
+  CGContextDrawTiledImage(ctx, (CGRect){CGPointZero,kTileSize}, [[UIImage imageNamed:@"tile"] CGImage]);
 }
 
 - (KalTileView *)firstTileOfMonth
@@ -97,7 +97,17 @@ extern const CGSize kTileSize;
 {
   for (KalTileView *tile in self.subviews)
   {
-    tile.marked = [dates containsObject:tile.date];
+    
+    for (NSDictionary *item in dates) {
+
+      if ([item[@"date"] isEqual:tile.date] && item[@"events"] == @1)
+        tile.markedEvents = 1;
+      
+      if ([item[@"date"] isEqual:tile.date] && item[@"photos"] == @1)
+        tile.markedPhotos = 1;
+      
+    }
+    
     NSString *dayString = [tileAccessibilityFormatter stringFromDate:[tile.date NSDate]];
     if (dayString) {
       NSMutableString *helperText = [[NSMutableString alloc] initWithCapacity:128];

@@ -49,6 +49,20 @@
   return [[[NSCalendar currentCalendar] dateByAddingComponents:c toDate:self options:0] cc_dateByMovingToFirstDayOfTheMonth];
 }
 
+- (NSDate *)cc_dateByMovingToFirstDayOfSameMonthOfThePreviousYear
+{
+  NSDateComponents *c = [[NSDateComponents alloc] init];
+  c.year = -1;
+  return [[[NSCalendar currentCalendar] dateByAddingComponents:c toDate:self options:0] cc_dateByMovingToFirstDayOfTheMonth];
+}
+
+- (NSDate *)cc_dateByMovingToFirstDayOfSameMonthOfTheFollowingYear
+{
+  NSDateComponents *c = [[NSDateComponents alloc] init];
+  c.year = 1;
+  return [[[NSCalendar currentCalendar] dateByAddingComponents:c toDate:self options:0] cc_dateByMovingToFirstDayOfTheMonth];
+}
+
 - (NSDateComponents *)cc_componentsForMonthDayAndYear
 {
   return [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:self];
