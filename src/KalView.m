@@ -218,12 +218,14 @@ static const CGFloat kMonthLabelHeight = 17.f;
   tableView = [[UITableView alloc] initWithFrame:fullWidthAutomaticLayoutFrame style:UITableViewStylePlain];
   tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   [contentView addSubview:tableView];
-  
+
+  /*
   // Drop shadow below tile grid and over the list of events for the selected day
-//  shadowView = [[UIImageView alloc] initWithFrame:fullWidthAutomaticLayoutFrame];
-//  shadowView.image = [UIImage imageNamed:@"Kal.bundle/kal_grid_shadow.png"];
-//  shadowView.height = shadowView.image.size.height;
-//  [contentView addSubview:shadowView];
+  shadowView = [[UIImageView alloc] initWithFrame:fullWidthAutomaticLayoutFrame];
+  shadowView.image = [UIImage imageNamed:@"Kal.bundle/kal_grid_shadow.png"];
+  shadowView.height = shadowView.image.size.height;
+  [contentView addSubview:shadowView];
+  */
   
   // Trigger the initial KVO update to finish the contentView layout
   [gridView sizeToFit];
@@ -249,8 +251,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
     CGRect frame = tableView.frame;
     frame.origin.y = gridBottom;
     frame.size.width = 320;
-    if (frame.size.height < tableView.superview.height - gridBottom)
-      frame.size.height = tableView.superview.height - gridBottom;
+    frame.size.height = tableView.superview.height - gridBottom;
     tableView.frame = frame;
     shadowView.top = gridBottom;
     

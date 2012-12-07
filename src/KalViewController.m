@@ -209,7 +209,6 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
   tableView.delegate = delegate;
   tableView.backgroundColor = [UIColor colorWithRed:0.89f green:0.89f blue:0.89f alpha:1.f];
   tableView.separatorColor = [UIColor whiteColor];
-  [kalView selectDate:[KalDate dateFromNSDate:self.initialDate]];
   [self reloadData];
 }
 
@@ -236,11 +235,6 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 {
   [super viewDidAppear:animated];
   [tableView flashScrollIndicators];
-
-  CGRect frame = tableView.frame;
-  frame.size = tableView.contentSize;
-  tableView.frame = frame;
-  
 }
 
 #pragma mark -
