@@ -34,8 +34,6 @@ extern const CGSize kTileSize;
   UIFont *font = [UIFont boldSystemFontOfSize:fontSize];
   UIColor *shadowColor = nil;
   UIColor *textColor = nil;
-  UIImage *markerEventImage = [UIImage imageNamed:@"dotR"];
-  UIImage *markerPhotoImage = [UIImage imageNamed:@"dotLB"];
   CGContextSelectFont(ctx, [font.fontName cStringUsingEncoding:NSUTF8StringEncoding], fontSize, kCGEncodingMacRoman);
       
   CGContextTranslateCTM(ctx, 0, kTileSize.height);
@@ -56,19 +54,41 @@ extern const CGSize kTileSize;
     textColor = [UIColor darkGrayColor];
   }
   
-  NSInteger numOfMarker = flags.markedEvents + flags.markedPhotos;
+  UIImage *markerRedImage = [UIImage imageNamed:@"dotR"];
+  UIImage *markerLightBlueImage = [UIImage imageNamed:@"dotLB"];
+  UIImage *markerOrangeImage = [UIImage imageNamed:@"dotO"];
+  UIImage *markerGreenImage = [UIImage imageNamed:@"dotG"];
+  UIImage *markerDarkBlueImage = [UIImage imageNamed:@"dotDB"];
+  NSInteger numOfMarker = flags.markedRed + flags.markedLightBlue + flags.markedOrange + flags.markedGreen + flags.markedDarkBlue;
+
   if (numOfMarker) {
     const int kTileWidth = 46.f;
     const int kDotWidth = 4.f;
     const int kSpace = 1.f;
     NSInteger numOfDrawedDot = 0;
     
-    if (flags.markedEvents) {
-      [markerEventImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f, 5.f, 4.f, 4.f)];
+    if (flags.markedRed) {
+      [markerRedImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f, 5.f, 4.f, 4.f)];
       numOfDrawedDot += 1;
     }
-    if (flags.markedPhotos) {
-      [markerPhotoImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, 4.f, 4.f)];
+    
+    if (flags.markedLightBlue) {
+      [markerLightBlueImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, 4.f, 4.f)];
+      numOfDrawedDot += 1;
+    }
+    
+    if (flags.markedOrange) {
+      [markerOrangeImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, 4.f, 4.f)];
+      numOfDrawedDot += 1;
+    }
+    
+    if (flags.markedGreen) {
+      [markerGreenImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, 4.f, 4.f)];
+      numOfDrawedDot += 1;
+    }
+    
+    if (flags.markedDarkBlue) {
+      [markerDarkBlueImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, 4.f, 4.f)];
       numOfDrawedDot += 1;
     }
   }
@@ -106,9 +126,11 @@ extern const CGSize kTileSize;
   flags.type = KalTileTypeRegular;
   flags.highlighted = NO;
   flags.selected = NO;
-  flags.marked = NO;
-  flags.markedEvents = NO;
-  flags.markedPhotos = NO;
+  flags.markedRed = NO;
+  flags.markedLightBlue = NO;
+  flags.markedOrange = NO;
+  flags.markedGreen = NO;
+  flags.markedDarkBlue = NO;
 }
 
 - (void)setDate:(KalDate *)aDate
@@ -158,36 +180,58 @@ extern const CGSize kTileSize;
   [self setNeedsDisplay];
 }
 
-- (BOOL)isMarked { return flags.marked; }
+- (BOOL)isMarkedRed { return flags.markedRed; }
 
-- (void)setMarked:(BOOL)marked
+- (void)setMarkedRed:(BOOL)markedRed
 {
-  if (flags.marked == marked)
+  if (flags.markedRed == markedRed)
     return;
   
-  flags.marked = marked;
+  flags.markedRed = markedRed;
   [self setNeedsDisplay];
 }
 
-- (BOOL)isMarkedEvents { return flags.markedEvents; }
+- (BOOL)isMarkedLightBlue { return flags.markedLightBlue; }
 
-- (void)setMarkedEvents:(BOOL)markedEvents
+- (void)setMarkedLightBlue:(BOOL)markedLightBlue
 {
-  if (flags.markedEvents == markedEvents)
+  if (flags.markedLightBlue == markedLightBlue)
     return;
   
-  flags.markedEvents = markedEvents;
+  flags.markedLightBlue = markedLightBlue;
   [self setNeedsDisplay];
 }
 
-- (BOOL)isMarkedPhotos { return flags.markedPhotos; }
+- (BOOL)isMarkedOrange { return flags.markedOrange; }
 
-- (void)setMarkedPhotos:(BOOL)markedPhotos
+- (void)setMarkedOrange:(BOOL)markedOrange
 {
-  if (flags.markedPhotos == markedPhotos)
+  if (flags.markedOrange == markedOrange)
     return;
   
-  flags.markedPhotos = markedPhotos;
+  flags.markedOrange = markedOrange;
+  [self setNeedsDisplay];
+}
+
+- (BOOL)isMarkedGreen { return flags.markedGreen; }
+
+- (void)setMarkedGreen:(BOOL)markedGreen
+{
+  if (flags.markedGreen == markedGreen)
+    return;
+  
+  flags.markedGreen = markedGreen;
+  [self setNeedsDisplay];
+}
+
+- (BOOL)isMarkedDarkBlue { return flags.markedDarkBlue; }
+
+- (void)setMarkedDarkBlue:(BOOL)markedDarkBlue
+{
+  if (flags.markedDarkBlue == markedDarkBlue)
+    return;
+  
+  flags.markedDarkBlue = markedDarkBlue;
   [self setNeedsDisplay];
 }
 

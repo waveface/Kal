@@ -100,11 +100,20 @@ extern const CGSize kTileSize;
     
     for (NSDictionary *item in dates) {
 
-      if ([item[@"date"] isEqual:tile.date] && item[@"events"] == @1)
-        tile.markedEvents = 1;
+      if ([item[@"date"] isEqual:tile.date] && item[@"markedRed"] == @1)
+        tile.markedRed = 1;
       
-      if ([item[@"date"] isEqual:tile.date] && item[@"photos"] == @1)
-        tile.markedPhotos = 1;
+      if ([item[@"date"] isEqual:tile.date] && item[@"markedLightBlue"] == @1)
+        tile.markedLightBlue = 1;
+      
+      if ([item[@"date"] isEqual:tile.date] && item[@"markedOrange"] == @1)
+        tile.markedOrange = 1;
+      
+      if ([item[@"date"] isEqual:tile.date] && item[@"markedGreen"] == @1)
+        tile.markedGreen = 1;
+      
+      if ([item[@"date"] isEqual:tile.date] && item[@"markedDarkBlue"] == @1)
+        tile.markedDarkBlue = 1;
       
     }
     
@@ -114,8 +123,16 @@ extern const CGSize kTileSize;
       if ([tile.date isToday])
         [helperText appendFormat:@"%@ ", NSLocalizedString(@"Today", @"Accessibility text for a day tile that represents today")];
       [helperText appendString:dayString];
-      if (tile.marked)
-        [helperText appendFormat:@". %@", NSLocalizedString(@"Marked", @"Accessibility text for a day tile which is marked with a small dot")];
+      if (tile.markedRed)
+        [helperText appendFormat:@". %@", NSLocalizedString(@"MarkedRed", @"Accessibility text for a day tile which is marked with a small dot")];
+      if (tile.markedLightBlue)
+        [helperText appendFormat:@". %@", NSLocalizedString(@"MarkedLightBlue", @"Accessibility text for a day tile which is marked with a small dot")];
+      if (tile.markedOrange)
+        [helperText appendFormat:@". %@", NSLocalizedString(@"MarkedOrange", @"Accessibility text for a day tile which is marked with a small dot")];
+      if (tile.markedGreen)
+        [helperText appendFormat:@". %@", NSLocalizedString(@"MarkedGreen", @"Accessibility text for a day tile which is marked with a small dot")];
+      if (tile.markedDarkBlue)
+        [helperText appendFormat:@". %@", NSLocalizedString(@"MarkedDarkBlue", @"Accessibility text for a day tile which is marked with a small dot")];
       [tile setAccessibilityLabel:helperText];
     }
   }

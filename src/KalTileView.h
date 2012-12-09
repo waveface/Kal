@@ -21,9 +21,11 @@ typedef char KalTileType;
   struct {
     unsigned int selected : 1;
     unsigned int highlighted : 1;
-    unsigned int marked : 1;
-    unsigned int markedEvents : 1;
-    unsigned int markedPhotos : 1;
+    unsigned int markedRed : 1;
+    unsigned int markedLightBlue : 1;
+    unsigned int markedOrange : 1;
+    unsigned int markedGreen : 1;
+    unsigned int markedDarkBlue : 1;
     unsigned int type : 2;
   } flags;
 }
@@ -31,9 +33,11 @@ typedef char KalTileType;
 @property (nonatomic, strong) KalDate *date;
 @property (nonatomic, getter=isHighlighted) BOOL highlighted;
 @property (nonatomic, getter=isSelected) BOOL selected;
-@property (nonatomic, getter=isMarked) BOOL marked;
-@property (nonatomic, getter=ismarkedEvents) BOOL markedEvents;
-@property (nonatomic, getter=ismarkedPhotos) BOOL markedPhotos;
+@property (nonatomic, getter=isMarkedRed) BOOL markedRed;
+@property (nonatomic, getter=isMarkedLightBlue) BOOL markedLightBlue;
+@property (nonatomic, getter=isMarkedOrange) BOOL markedOrange;
+@property (nonatomic, getter=isMarkedGreen) BOOL markedGreen;
+@property (nonatomic, getter=isMarkedDarkBlue) BOOL markedDarkBlue;
 @property (nonatomic) KalTileType type;
 
 - (void)resetState;
