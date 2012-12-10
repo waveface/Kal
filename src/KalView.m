@@ -32,7 +32,6 @@ static const CGFloat kMonthLabelHeight = 17.f;
     self.autoresizesSubviews = YES;
     self.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     
-    frame.size.width = 320;
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, frame.size.width, kHeaderHeight)];
     headerView.backgroundColor = [UIColor grayColor];
     [self addSubviewsToHeaderView:headerView];
@@ -229,7 +228,6 @@ static const CGFloat kMonthLabelHeight = 17.f;
   
   // Trigger the initial KVO update to finish the contentView layout
   [gridView sizeToFit];
-  gridView.width = 320;
   
 }
 
@@ -250,7 +248,6 @@ static const CGFloat kMonthLabelHeight = 17.f;
     CGFloat gridBottom = gridView.top + gridView.height;
     CGRect frame = tableView.frame;
     frame.origin.y = gridBottom;
-    frame.size.width = 320;
     frame.size.height = tableView.superview.height - gridBottom;
     tableView.frame = frame;
     shadowView.top = gridBottom;
