@@ -100,19 +100,19 @@ extern const CGSize kTileSize;
     
     for (NSDictionary *item in dates) {
 
-      if ([item[@"date"] isEqual:tile.date] && item[@"markedRed"] == @1)
+      if ([item[@"date"] isEqual:tile.date] && item[@"markedRed"] == @YES)
         tile.markedRed = 1;
       
-      if ([item[@"date"] isEqual:tile.date] && item[@"markedLightBlue"] == @1)
+      if ([item[@"date"] isEqual:tile.date] && item[@"markedLightBlue"] == @YES)
         tile.markedLightBlue = 1;
       
-      if ([item[@"date"] isEqual:tile.date] && item[@"markedOrange"] == @1)
+      if ([item[@"date"] isEqual:tile.date] && item[@"markedOrange"] == @YES)
         tile.markedOrange = 1;
       
-      if ([item[@"date"] isEqual:tile.date] && item[@"markedGreen"] == @1)
+      if ([item[@"date"] isEqual:tile.date] && item[@"markedGreen"] == @YES)
         tile.markedGreen = 1;
       
-      if ([item[@"date"] isEqual:tile.date] && item[@"markedDarkBlue"] == @1)
+      if ([item[@"date"] isEqual:tile.date] && item[@"markedDarkBlue"] == @YES)
         tile.markedDarkBlue = 1;
       
     }
