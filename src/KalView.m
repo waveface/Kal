@@ -28,8 +28,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
     logic = theLogic;
     [logic addObserver:self forKeyPath:@"selectedMonthName" options:NSKeyValueObservingOptionNew context:NULL];
     [logic addObserver:self forKeyPath:@"selectedYear" options:NSKeyValueObservingOptionNew context:NULL];
-    [logic addObserver:self forKeyPath:@"selectedDateNatualString" options:NSKeyValueObservingOptionNew context:NULL];
-
+    
     self.autoresizesSubviews = YES;
     self.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     
@@ -113,7 +112,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
                                                kChangeMonthButtonHeight);
   UIButton *previousMonthButton = [[UIButton alloc] initWithFrame:previousMonthButtonFrame];
   [previousMonthButton setAccessibilityLabel:NSLocalizedString(@"Previous month", nil)];
-  [previousMonthButton setImage:[UIImage imageNamed:@"leftAR"] forState:UIControlStateNormal];
+  [previousMonthButton setImage:[UIImage imageNamed:@"Kal.bundle/leftAR"] forState:UIControlStateNormal];
   previousMonthButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
   previousMonthButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
   [previousMonthButton addTarget:self action:@selector(showPreviousMonth) forControlEvents:UIControlEventTouchUpInside];
@@ -139,7 +138,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
                                            kChangeMonthButtonHeight);
   UIButton *nextMonthButton = [[UIButton alloc] initWithFrame:nextMonthButtonFrame];
   [nextMonthButton setAccessibilityLabel:NSLocalizedString(@"Next month", nil)];
-  [nextMonthButton setImage:[UIImage imageNamed:@"rightAR"] forState:UIControlStateNormal];
+  [nextMonthButton setImage:[UIImage imageNamed:@"Kal.bundle/rightAR"] forState:UIControlStateNormal];
   nextMonthButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
   nextMonthButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
   [nextMonthButton addTarget:self action:@selector(showFollowingMonth) forControlEvents:UIControlEventTouchUpInside];
@@ -152,7 +151,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
                                               kChangeMonthButtonHeight);
   UIButton *previousYearButton = [[UIButton alloc] initWithFrame:previousYearButtonFrame];
   [previousYearButton setAccessibilityLabel:NSLocalizedString(@"Previous month", nil)];
-  [previousYearButton setImage:[UIImage imageNamed:@"leftAR"] forState:UIControlStateNormal];
+  [previousYearButton setImage:[UIImage imageNamed:@"Kal.bundle/leftAR"] forState:UIControlStateNormal];
   previousYearButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
   previousYearButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
   [previousYearButton addTarget:self action:@selector(showPreviousYear) forControlEvents:UIControlEventTouchUpInside];
@@ -178,7 +177,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
                                           kChangeMonthButtonHeight);
   UIButton *nextYearButton = [[UIButton alloc] initWithFrame:nextYearButtonFrame];
   [nextYearButton setAccessibilityLabel:NSLocalizedString(@"Next month", nil)];
-  [nextYearButton setImage:[UIImage imageNamed:@"rightAR"] forState:UIControlStateNormal];
+  [nextYearButton setImage:[UIImage imageNamed:@"Kal.bundle/rightAR"] forState:UIControlStateNormal];
   nextYearButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
   nextYearButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
   [nextYearButton addTarget:self action:@selector(showFollowingYear) forControlEvents:UIControlEventTouchUpInside];
@@ -206,14 +205,6 @@ static const CGFloat kMonthLabelHeight = 17.f;
     [headerView addSubview:weekdayLabel];
   }
  
-  
-  // Add large date info header for selected date
-  if (self.isPad) {
-    CGRect dateViewHeaderFrame = CGRectMake(46.f * 7, 30.f, self.width - 46.f * 7, kHeaderHeight - 29.f);
-    UIView *dateViewHeader = [[UIView alloc] initWithFrame:dateViewHeaderFrame];
-    dateViewHeader.backgroundColor = [UIColor whiteColor];
-    [headerView addSubview:dateViewHeader];
-  }
    
 }
 
@@ -229,27 +220,6 @@ static const CGFloat kMonthLabelHeight = 17.f;
   [gridView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:NULL];
   [contentView addSubview:gridView];
  
-  if (self.isPad) {
-
-    // Add large date info for selected date
-    CGRect dateViewFrame = CGRectMake(46.f * 7, 0.f, self.width - 46.f * 7, 210.f);
-    dateView = [[UIView alloc] initWithFrame:dateViewFrame];
-    dayDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.width - 46.f * 7 - 150.f, 0.f, 140.f, 150.f)];
-    [dayDateLabel setText:[logic selectedDay]];
-    [dayDateLabel setTextAlignment:NSTextAlignmentRight];
-    [dayDateLabel setFont:[UIFont systemFontOfSize:96.f]];
-    [dayDateLabel setTextColor:[UIColor lightGrayColor]];
-    fullDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.width - 46.f * 7 - 215.f, 150.f, 195.f, 60.f)];
-    [fullDateLabel setText:[logic selectedDateNatualString]];
-    [fullDateLabel setNumberOfLines:0];
-    [fullDateLabel setTextAlignment:NSTextAlignmentRight];
-    [fullDateLabel setFont:[UIFont systemFontOfSize:22.f]];
-    [fullDateLabel setTextColor:[UIColor lightGrayColor]];
-    [dateView addSubview:dayDateLabel];
-    [dateView addSubview:fullDateLabel];
-    [contentView addSubview:dateView];
-  }
-
   // The list of events for the selected day
   tableView = [[UITableView alloc] initWithFrame:fullWidthAutomaticLayoutFrame style:UITableViewStylePlain];
   tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -289,10 +259,6 @@ static const CGFloat kMonthLabelHeight = 17.f;
     tableView.frame = frame;
     shadowView.top = gridBottom;
     
-  } else if ([keyPath isEqualToString:@"selectedDateNatualString"]) {
-    [self setDayLabelText:[logic selectedDay]];
-    [self setFullDateLabelText:[logic selectedDateNatualString]];
-    
   } else if ([keyPath isEqualToString:@"selectedMonthName"]) {
     [self setHeaderMonthTitleText:change[NSKeyValueChangeNewKey]];
   
@@ -331,16 +297,6 @@ static const CGFloat kMonthLabelHeight = 17.f;
   headerYearTitleLabel.left = self.width - kChangeMonthButtonWidth - kYearLabelWidth;
 }
 
-- (void)setDayLabelText:(NSString *)text
-{
-  [dayDateLabel setText:text];
-}
-
-- (void)setFullDateLabelText:(NSString *)text
-{
-  [fullDateLabel setText:text];
-}
-
 - (void)showSelectedDate
 {
   [dayDateLabel setText:[logic selectedDay]];
@@ -361,7 +317,6 @@ static const CGFloat kMonthLabelHeight = 17.f;
 {
   [logic removeObserver:self forKeyPath:@"selectedMonthName"];
   [logic removeObserver:self forKeyPath:@"selectedYear"];
-  [logic removeObserver:self forKeyPath:@"selectedDateNatualString"];
   
   [gridView removeObserver:self forKeyPath:@"frame"];
 }

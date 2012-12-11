@@ -40,13 +40,13 @@ extern const CGSize kTileSize;
   CGContextScaleCTM(ctx, 1, -1);
   
   if ([self isToday] && self.selected) {
-    [[[UIImage imageNamed:@"tile_today_selected"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
+    [[[UIImage imageNamed:@"Kal.bundle/tile_today_selected"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
     textColor = [UIColor whiteColor];
   } else if ([self isToday] && !self.selected) {
-    [[[UIImage imageNamed:@"tile_today"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
+    [[[UIImage imageNamed:@"Kal.bundle/tile_today"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
     textColor = [UIColor whiteColor];
   } else if (self.selected) {
-    [[[UIImage imageNamed:@"tile_selected"] stretchableImageWithLeftCapWidth:1 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
+    [[[UIImage imageNamed:@"Kal.bundle/tile_selected"] stretchableImageWithLeftCapWidth:1 topCapHeight:0] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
     textColor = [UIColor whiteColor];
   } else if (self.belongsToAdjacentMonth) {
     textColor = [UIColor lightGrayColor];
@@ -54,11 +54,11 @@ extern const CGSize kTileSize;
     textColor = [UIColor darkGrayColor];
   }
   
-  UIImage *markerRedImage = [UIImage imageNamed:@"dotR"];
-  UIImage *markerLightBlueImage = [UIImage imageNamed:@"dotLB"];
-  UIImage *markerOrangeImage = [UIImage imageNamed:@"dotO"];
-  UIImage *markerGreenImage = [UIImage imageNamed:@"dotG"];
-  UIImage *markerDarkBlueImage = [UIImage imageNamed:@"dotDB"];
+  UIImage *markerRedImage = [UIImage imageNamed:@"Kal.bundle/dotR"];
+  UIImage *markerLightBlueImage = [UIImage imageNamed:@"Kal.bundle/dotLB"];
+  UIImage *markerOrangeImage = [UIImage imageNamed:@"Kal.bundle/dotO"];
+  UIImage *markerGreenImage = [UIImage imageNamed:@"Kal.bundle/dotG"];
+  UIImage *markerDarkBlueImage = [UIImage imageNamed:@"Kal.bundle/dotDB"];
   NSInteger numOfMarker = flags.markedRed + flags.markedLightBlue + flags.markedOrange + flags.markedGreen + flags.markedDarkBlue;
 
   if (numOfMarker) {
