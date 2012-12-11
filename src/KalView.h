@@ -42,9 +42,12 @@
   UILabel *headerTitleLabel;
   UILabel *headerMonthTitleLabel;
   UILabel *headerYearTitleLabel;
+  UILabel *dayDateLabel;
+  UILabel *fullDateLabel;
   KalGridView *gridView;
   UITableView *tableView;
   UIImageView *shadowView;
+  UIView *dateView;
   id<KalViewDelegate> __unsafe_unretained delegate;
   KalLogic *logic;
 }
@@ -58,6 +61,7 @@
 - (void)selectDate:(KalDate *)date;
 - (void)markTilesForDates:(NSArray *)dates;
 - (void)redrawEntireMonth;
+- (void)showSelectedDate;
 
 // These 3 methods are exposed for the delegate. They should be called 
 // *after* the KalLogic has moved to the month specified by the user.

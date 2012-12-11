@@ -31,6 +31,8 @@
   NSDateFormatter *monthAndYearFormatter;
   NSDateFormatter *monthFormatter;
   NSDateFormatter *yearFormatter;
+  NSDateFormatter *natualFormatter;
+  NSDateFormatter *dayFormatter;
 }
 
 @property (nonatomic, strong) NSDate *baseDate;    // The first day of the currently selected month
@@ -42,6 +44,9 @@
 @property (unsafe_unretained, nonatomic, readonly) NSString *selectedMonthNameAndYear; // localized (e.g. "September 2010" for USA locale)
 @property (nonatomic, readonly) NSString *selectedMonthName;
 @property (nonatomic, readonly) NSString *selectedYear;
+@property (nonatomic, readonly) NSString *selectedDateNatualString;
+@property (nonatomic, readonly) NSString *selectedDay;
+@property (nonatomic, strong) NSDate *selectedDate;
 
 - (id)initForDate:(NSDate *)date; // designated initializer.
 

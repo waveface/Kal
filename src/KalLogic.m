@@ -40,6 +40,16 @@
   return [NSSet setWithObjects:@"baseDate", nil];
 }
 
++ (NSSet *)keyPathsForValuesAffectingSelectedDateNatualString
+{
+  return [NSSet setWithObjects:@"selectedDate", nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingSelectedDay
+{
+  return [NSSet setWithObjects:@"selectedDate", nil];
+}
+
 - (id)initForDate:(NSDate *)date
 {
   if ((self = [super init])) {
@@ -48,6 +58,12 @@
     
     yearFormatter = [[NSDateFormatter alloc] init];
     [yearFormatter setDateFormat:@"yyyy"];
+    
+    natualFormatter = [[NSDateFormatter alloc] init];
+    [natualFormatter setDateFormat:@"EEEE, MMMM dd yyyy"];
+    
+    dayFormatter = [[NSDateFormatter alloc] init];
+    [dayFormatter setDateFormat:@"dd"];
     
     monthAndYearFormatter = [[NSDateFormatter alloc] init];
     [monthAndYearFormatter setDateFormat:@"LLLL yyyy"];
@@ -106,6 +122,16 @@
 - (NSString *)selectedYear;
 {
   return [yearFormatter stringFromDate:self.baseDate];
+}
+
+- (NSString *)selectedDateNatualString;
+{
+  return [natualFormatter stringFromDate:self.selectedDate];
+}
+
+- (NSString *)selectedDay;
+{
+  return [dayFormatter stringFromDate:self.selectedDate];
 }
 
 #pragma mark Low-level implementation details

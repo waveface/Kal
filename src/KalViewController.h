@@ -33,6 +33,7 @@
 @property (nonatomic, unsafe_unretained) id<UITableViewDelegate> delegate;
 @property (nonatomic, unsafe_unretained) id<KalDataSource> dataSource;
 @property (nonatomic, strong, readonly) NSDate *selectedDate;
+@property (nonatomic, assign) CGRect frame;
 
 - (id)initWithSelectedDate:(NSDate *)selectedDate;  // designated initializer. When the calendar is first displayed to the user, the month that contains 'selectedDate' will be shown and the corresponding tile for 'selectedDate' will be automatically selected.
 - (void)reloadData;                                 // If you change the KalDataSource after the KalViewController has already been displayed to the user, you must call this method in order for the view to reflect the new data.

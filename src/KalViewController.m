@@ -28,6 +28,9 @@ void mach_absolute_difference(uint64_t end, uint64_t start, struct timespec *tp)
 }
 #endif
 
+#define kScreenWidth ((CGFloat)([UIScreen mainScreen].bounds.size.width))
+#define kScreenHeight ((CGFloat)([UIScreen mainScreen].bounds.size.height))
+
 NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotification";
 
 @interface KalViewController ()
@@ -38,7 +41,7 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 
 @implementation KalViewController
 
-@synthesize dataSource, delegate, initialDate, selectedDate;
+@synthesize dataSource, delegate, initialDate, selectedDate, frame;
 
 - (id)initWithSelectedDate:(NSDate *)date
 {
@@ -104,6 +107,7 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
   [dataSource loadItemsFromDate:from toDate:to];
   [tableView reloadData];
   [tableView flashScrollIndicators];
+  [logic setSelectedDate:[date NSDate]];
 }
 
 - (void)showPreviousMonth
@@ -152,7 +156,7 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
   }
   
   [[self calendarView] markTilesForDates:dates];
-  [self didSelectDate:self.calendarView.selectedDate];
+  [self didSelectDate:self.calendarView.selectedDate];  
 }
 
 // ---------------------------------------
@@ -202,7 +206,7 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 {
   if (!self.title)
     self.title = @"Calendar";
-  KalView *kalView = [[KalView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame] delegate:self logic:logic];
+  KalView *kalView = [[KalView alloc] initWithFrame:frame delegate:self logic:logic];
   self.view = kalView;
   tableView = kalView.tableView;
   tableView.dataSource = dataSource;
@@ -243,6 +247,50 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationSignificantTimeChangeNotification object:nil];
   [[NSNotificationCenter defaultCenter] removeObserver:self name:KalDataSourceChangedNotification object:nil];
+}
+
+#pragma mark - Orientation
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+  
+  BOOL isPad = NO;
+#if (__IPHONE_OS_VERSION_MAX_ALLOWED >= 30200)
+	isPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+#endif
+  
+	if (isPad) {
+		return UIInterfaceOrientationMaskAll;
+	} else
+		return UIInterfaceOrientationMaskPortrait;
+	
+}
+
+- (BOOL)shouldAutorotate
+{
+	
+	return YES;
+	
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+	[super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+  
+  CGFloat kFrameWidth = self.view.width;
+  CGFloat kFrameHeight = self.view.height;
+
+  if (self.view.width > self.view.height) {
+    kFrameWidth = self.view.height;
+    kFrameHeight = self.view.width;
+  }
+  
+  if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
+    self.view.frame = CGRectMake(0, 0, kFrameWidth, kFrameHeight);
+  }
+  else if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) {
+    self.view.frame = CGRectMake(0, 0, kFrameHeight + 44.f, kFrameWidth);
+  }
 }
 
 @end

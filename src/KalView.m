@@ -28,6 +28,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
     logic = theLogic;
     [logic addObserver:self forKeyPath:@"selectedMonthName" options:NSKeyValueObservingOptionNew context:NULL];
     [logic addObserver:self forKeyPath:@"selectedYear" options:NSKeyValueObservingOptionNew context:NULL];
+    [logic addObserver:self forKeyPath:@"selectedDateNatualString" options:NSKeyValueObservingOptionNew context:NULL];
 
     self.autoresizesSubviews = YES;
     self.autoresizingMask = UIViewAutoresizingFlexibleHeight;
@@ -81,6 +82,13 @@ static const CGFloat kMonthLabelHeight = 17.f;
     [delegate showFollowingYear];
 }
 
+- (BOOL)isPad {
+	BOOL isPad = NO;
+#if (__IPHONE_OS_VERSION_MAX_ALLOWED >= 30200)
+	isPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+#endif
+	return isPad;
+}
 
 - (void)addSubviewsToHeaderView:(UIView *)headerView
 {
@@ -99,7 +107,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   [headerView addSubview:backgroundView];
   
   // Create the previous month button on the left side of the view
-  CGRect previousMonthButtonFrame = CGRectMake(self.left,
+  CGRect previousMonthButtonFrame = CGRectMake(0,
                                                0,
                                                kChangeMonthButtonWidth,
                                                kChangeMonthButtonHeight);
@@ -112,7 +120,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   [headerView addSubview:previousMonthButton];
   
   // Draw the selected month name centered and at the top of the view
-  CGRect monthLabelFrame = CGRectMake(self.left + kChangeMonthButtonWidth,
+  CGRect monthLabelFrame = CGRectMake(kChangeMonthButtonWidth,
                                       kHeaderVerticalAdjust,
                                       kMonthLabelWidth,
                                       kMonthLabelHeight);
@@ -138,7 +146,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   [headerView addSubview:nextMonthButton];
   
   // Create the previous month button on the left side of the view
-  CGRect previousYearButtonFrame = CGRectMake(kChangeMonthButtonWidth * 2 + kMonthLabelWidth,
+  CGRect previousYearButtonFrame = CGRectMake(self.width - kChangeMonthButtonWidth * 2 - kYearLabelWidth,
                                               0,
                                               kChangeMonthButtonWidth,
                                               kChangeMonthButtonHeight);
@@ -151,7 +159,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   [headerView addSubview:previousYearButton];
   
   // Draw the selected month name centered and at the top of the view
-  CGRect yearLabelFrame = CGRectMake(kChangeMonthButtonWidth * 3 + kMonthLabelWidth,
+  CGRect yearLabelFrame = CGRectMake(self.width - kChangeMonthButtonWidth - kYearLabelWidth,
                                      kHeaderVerticalAdjust,
                                      kMonthLabelWidth,
                                      kMonthLabelHeight);
@@ -164,7 +172,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   [headerView addSubview:headerYearTitleLabel];
   
   // Create the next month button on the right side of the view
-  CGRect nextYearButtonFrame = CGRectMake(kChangeMonthButtonWidth * 3 + kMonthLabelWidth + kYearLabelWidth,
+  CGRect nextYearButtonFrame = CGRectMake(self.width - kChangeMonthButtonWidth,
                                           0,
                                           kChangeMonthButtonWidth,
                                           kChangeMonthButtonHeight);
@@ -183,8 +191,6 @@ static const CGFloat kMonthLabelHeight = 17.f;
   NSUInteger i = firstWeekday - 1;
   for (CGFloat xOffset = 0.f; xOffset < headerView.width; xOffset += 46.f, i = (i+1)%7) {
     CGRect weekdayFrame = CGRectMake(xOffset, 30.f, 46.f, kHeaderHeight - 29.f);
-    if (i == 6)
-      weekdayFrame = CGRectMake(xOffset, 30.f, 44.f, kHeaderHeight - 29.f);
     UILabel *weekdayLabel = [[UILabel alloc] initWithFrame:weekdayFrame];
     weekdayLabel.backgroundColor = [UIColor colorWithRed:0.757f green:0.757f blue:0.757f alpha:1.f];
     weekdayLabel.font = [UIFont boldSystemFontOfSize:10.f];
@@ -199,6 +205,16 @@ static const CGFloat kMonthLabelHeight = 17.f;
     [weekdayLabel setAccessibilityLabel:fullWeekdayNames[i]];
     [headerView addSubview:weekdayLabel];
   }
+ 
+  
+  // Add large date info header for selected date
+  if (self.isPad) {
+    CGRect dateViewHeaderFrame = CGRectMake(46.f * 7, 30.f, self.width - 46.f * 7, kHeaderHeight - 29.f);
+    UIView *dateViewHeader = [[UIView alloc] initWithFrame:dateViewHeaderFrame];
+    dateViewHeader.backgroundColor = [UIColor whiteColor];
+    [headerView addSubview:dateViewHeader];
+  }
+   
 }
 
 - (void)addSubviewsToContentView:(UIView *)contentView
@@ -212,6 +228,27 @@ static const CGFloat kMonthLabelHeight = 17.f;
   gridView = [[KalGridView alloc] initWithFrame:fullWidthAutomaticLayoutFrame logic:logic delegate:delegate];
   [gridView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:NULL];
   [contentView addSubview:gridView];
+ 
+  if (self.isPad) {
+
+    // Add large date info for selected date
+    CGRect dateViewFrame = CGRectMake(46.f * 7, 0.f, self.width - 46.f * 7, 210.f);
+    dateView = [[UIView alloc] initWithFrame:dateViewFrame];
+    dayDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.width - 46.f * 7 - 150.f, 0.f, 140.f, 150.f)];
+    [dayDateLabel setText:[logic selectedDay]];
+    [dayDateLabel setTextAlignment:NSTextAlignmentRight];
+    [dayDateLabel setFont:[UIFont systemFontOfSize:96.f]];
+    [dayDateLabel setTextColor:[UIColor lightGrayColor]];
+    fullDateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.width - 46.f * 7 - 215.f, 150.f, 195.f, 60.f)];
+    [fullDateLabel setText:[logic selectedDateNatualString]];
+    [fullDateLabel setNumberOfLines:0];
+    [fullDateLabel setTextAlignment:NSTextAlignmentRight];
+    [fullDateLabel setFont:[UIFont systemFontOfSize:22.f]];
+    [fullDateLabel setTextColor:[UIColor lightGrayColor]];
+    [dateView addSubview:dayDateLabel];
+    [dateView addSubview:fullDateLabel];
+    [contentView addSubview:dateView];
+  }
 
   // The list of events for the selected day
   tableView = [[UITableView alloc] initWithFrame:fullWidthAutomaticLayoutFrame style:UITableViewStylePlain];
@@ -252,6 +289,10 @@ static const CGFloat kMonthLabelHeight = 17.f;
     tableView.frame = frame;
     shadowView.top = gridBottom;
     
+  } else if ([keyPath isEqualToString:@"selectedDateNatualString"]) {
+    [self setDayLabelText:[logic selectedDay]];
+    [self setFullDateLabelText:[logic selectedDateNatualString]];
+    
   } else if ([keyPath isEqualToString:@"selectedMonthName"]) {
     [self setHeaderMonthTitleText:change[NSKeyValueChangeNewKey]];
   
@@ -283,11 +324,27 @@ static const CGFloat kMonthLabelHeight = 17.f;
 - (void)setHeaderYearTitleText:(NSString *)text
 {
   const CGFloat kChangeMonthButtonWidth = 46.0f;
-  const CGFloat kMonthLabelWidth = 100.f;
+  const CGFloat kYearLabelWidth = 36.f;
   
   [headerYearTitleLabel setText:text];
   [headerYearTitleLabel sizeToFit];
-  headerYearTitleLabel.left = kChangeMonthButtonWidth * 3 + kMonthLabelWidth;
+  headerYearTitleLabel.left = self.width - kChangeMonthButtonWidth - kYearLabelWidth;
+}
+
+- (void)setDayLabelText:(NSString *)text
+{
+  [dayDateLabel setText:text];
+}
+
+- (void)setFullDateLabelText:(NSString *)text
+{
+  [fullDateLabel setText:text];
+}
+
+- (void)showSelectedDate
+{
+  [dayDateLabel setText:[logic selectedDay]];
+  [fullDateLabel setText:[logic selectedDateNatualString]];
 }
 
 - (void)jumpToSelectedMonth { [gridView jumpToSelectedMonth]; }
@@ -304,6 +361,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
 {
   [logic removeObserver:self forKeyPath:@"selectedMonthName"];
   [logic removeObserver:self forKeyPath:@"selectedYear"];
+  [logic removeObserver:self forKeyPath:@"selectedDateNatualString"];
   
   [gridView removeObserver:self forKeyPath:@"frame"];
 }
