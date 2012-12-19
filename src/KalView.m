@@ -82,11 +82,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
 }
 
 - (BOOL)isPad {
-	BOOL isPad = NO;
-#if (__IPHONE_OS_VERSION_MAX_ALLOWED >= 30200)
-	isPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-#endif
-	return isPad;
+	return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
 }
 
 - (void)addSubviewsToHeaderView:(UIView *)headerView
@@ -111,6 +107,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
                                                kChangeMonthButtonWidth,
                                                kChangeMonthButtonHeight);
   UIButton *previousMonthButton = [[UIButton alloc] initWithFrame:previousMonthButtonFrame];
+  //previousMonthButton setImageEdgeInsets:<#(UIEdgeInsets)#>
   [previousMonthButton setAccessibilityLabel:NSLocalizedString(@"Previous month", nil)];
   [previousMonthButton setImage:[UIImage imageNamed:@"Kal.bundle/leftAR"] forState:UIControlStateNormal];
   previousMonthButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
@@ -188,8 +185,8 @@ static const CGFloat kMonthLabelHeight = 17.f;
   NSArray *fullWeekdayNames = [[[NSDateFormatter alloc] init] standaloneWeekdaySymbols];
   NSUInteger firstWeekday = [[NSCalendar currentCalendar] firstWeekday];
   NSUInteger i = firstWeekday - 1;
-  for (CGFloat xOffset = 0.f; xOffset < headerView.width; xOffset += 46.f, i = (i+1)%7) {
-    CGRect weekdayFrame = CGRectMake(xOffset, 30.f, 46.f, kHeaderHeight - 29.f);
+  for (CGFloat xOffset = 0.f; xOffset < headerView.width; xOffset += floorf(self.width/7.f), i = (i+1)%7) {
+    CGRect weekdayFrame = CGRectMake(xOffset, 30.f, floorf(self.width/7.f), kHeaderHeight - 29.f);
     UILabel *weekdayLabel = [[UILabel alloc] initWithFrame:weekdayFrame];
     weekdayLabel.backgroundColor = [UIColor colorWithRed:0.757f green:0.757f blue:0.757f alpha:1.f];
     weekdayLabel.font = [UIFont boldSystemFontOfSize:10.f];

@@ -62,33 +62,33 @@ extern const CGSize kTileSize;
   NSInteger numOfMarker = flags.markedRed + flags.markedLightBlue + flags.markedOrange + flags.markedGreen + flags.markedDarkBlue;
 
   if (numOfMarker) {
-    const int kTileWidth = 46.f;
-    const int kDotWidth = 4.f;
+    const int kTileWidth = kTileSize.width;
+    const int kDotWidth = 5.f;
     const int kSpace = 1.f;
     NSInteger numOfDrawedDot = 0;
     
     if (flags.markedRed) {
-      [markerRedImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f, 5.f, 4.f, 4.f)];
+      [markerRedImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f, 5.f, kDotWidth, kDotWidth)];
       numOfDrawedDot += 1;
     }
     
     if (flags.markedLightBlue) {
-      [markerLightBlueImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, 4.f, 4.f)];
+      [markerLightBlueImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, kDotWidth, kDotWidth)];
       numOfDrawedDot += 1;
     }
     
     if (flags.markedOrange) {
-      [markerOrangeImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, 4.f, 4.f)];
+      [markerOrangeImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, kDotWidth, kDotWidth)];
       numOfDrawedDot += 1;
     }
     
     if (flags.markedGreen) {
-      [markerGreenImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, 4.f, 4.f)];
+      [markerGreenImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, kDotWidth, kDotWidth)];
       numOfDrawedDot += 1;
     }
     
     if (flags.markedDarkBlue) {
-      [markerDarkBlueImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, 4.f, 4.f)];
+      [markerDarkBlueImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, kDotWidth, kDotWidth)];
       numOfDrawedDot += 1;
     }
   }
