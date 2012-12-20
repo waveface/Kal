@@ -100,7 +100,6 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 
 - (void)didSelectDate:(KalDate *)date
 {
-  self.selectedDate = [date NSDate];
   NSDate *from = [[date NSDate] cc_dateByMovingToBeginningOfDay];
   NSDate *to = [[date NSDate] cc_dateByMovingToEndOfDay];
   [self clearTable];
@@ -108,6 +107,7 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
   [tableView reloadData];
   [tableView flashScrollIndicators];
   [logic setSelectedDate:[date NSDate]];
+  self.selectedDate = [date NSDate];
 }
 
 - (void)showPreviousMonth
@@ -148,14 +148,18 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 - (void)loadedDataSource:(id<KalDataSource>)theDataSource;
 {
   NSArray *markedDates = [theDataSource markedDatesFrom:logic.fromDate to:logic.toDate];
-  NSMutableArray *dates = [markedDates mutableCopy];
-  for (NSMutableDictionary *item in dates) {
+  NSMutableArray *dates = [NSMutableArray array];
+  for (NSDictionary *item in markedDates) {
+    NSMutableDictionary *newItem = [item mutableCopy];
     NSDate *itemNSdate = item[@"date"];
+    
     if ([itemNSdate isKindOfClass:[NSDate class]])
-      item[@"date"] = [KalDate dateFromNSDate:itemNSdate];
+      newItem[@"date"] = [KalDate dateFromNSDate:itemNSdate];
+  
+    [dates addObject:newItem];
   }
   
-  [[self calendarView] markTilesForDates:dates];
+  [[self calendarView] markTilesForDates:[dates copy]];
   [self didSelectDate:self.calendarView.selectedDate];  
 }
 
