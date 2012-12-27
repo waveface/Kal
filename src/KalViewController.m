@@ -95,6 +95,11 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
   [self reloadData];
 }
 
+- (NSDate *)selectedNSDate
+{
+  return selectedDate;
+}
+
 // -----------------------------------------
 #pragma mark KalViewDelegate protocol
 
