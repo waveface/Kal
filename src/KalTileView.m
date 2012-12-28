@@ -54,45 +54,30 @@ extern const CGSize kTileSize;
     textColor = [UIColor darkGrayColor];
   }
   
-  UIImage *markerRedImage = [UIImage imageNamed:@"Kal.bundle/dotR"];
-  UIImage *markerLightBlueImage = [UIImage imageNamed:@"Kal.bundle/dotLB"];
-  UIImage *markerOrangeImage = [UIImage imageNamed:@"Kal.bundle/dotO"];
-  UIImage *markerGreenImage = [UIImage imageNamed:@"Kal.bundle/dotG"];
-  UIImage *markerDarkBlueImage = [UIImage imageNamed:@"Kal.bundle/dotDB"];
-  NSInteger numOfMarker = flags.markedRed + flags.markedLightBlue + flags.markedOrange + flags.markedGreen + flags.markedDarkBlue;
+  NSArray *marker = @[
+  @{@"marked": [NSNumber numberWithInt:flags.markedRed], @"image": [UIImage imageNamed:@"Kal.bundle/dotR"]},
+  @{@"marked": [NSNumber numberWithInt:flags.markedOrange], @"image": [UIImage imageNamed:@"Kal.bundle/dotO"]},
+  @{@"marked": [NSNumber numberWithInt:flags.markedGreen], @"image": [UIImage imageNamed:@"Kal.bundle/dotG"]},
+  @{@"marked": [NSNumber numberWithInt:flags.markedLightBlue], @"image": [UIImage imageNamed:@"Kal.bundle/dotLB"]},
+  @{@"marked": [NSNumber numberWithInt:flags.markedDarkBlue], @"image": [UIImage imageNamed:@"Kal.bundle/dotDB"]}
+  ];
 
-  if (numOfMarker) {
-    const int kTileWidth = kTileSize.width;
-    const int kDotWidth = 5.f;
-    const int kSpace = 1.f;
-    NSInteger numOfDrawedDot = 0;
-    
-    if (flags.markedRed) {
-      [markerRedImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f, 5.f, kDotWidth, kDotWidth)];
-      numOfDrawedDot += 1;
+  NSInteger numOfMarker = flags.markedRed + flags.markedLightBlue + flags.markedOrange + flags.markedGreen + flags.markedDarkBlue;
+  const int kTileWidth = kTileSize.width;
+  const int kDotWidth = 7.f;
+  const int kSpace = 1.f;
+
+  for (NSInteger numOfDrawedDot = 0, i = 0; i < marker.count; i++) {
+    if ([marker[i][@"marked"] isEqualToNumber:@1]) {
+      [marker[i][@"image"] drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot,
+                                                              5.f,
+                                                              kDotWidth,
+                                                              kDotWidth)];
+      numOfDrawedDot++;
     }
     
-    if (flags.markedOrange) {
-      [markerOrangeImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, kDotWidth, kDotWidth)];
-      numOfDrawedDot += 1;
-    }
-    
-    if (flags.markedGreen) {
-      [markerGreenImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, kDotWidth, kDotWidth)];
-      numOfDrawedDot += 1;
-    }
-    
-    if (flags.markedLightBlue) {
-      [markerLightBlueImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, kDotWidth, kDotWidth)];
-      numOfDrawedDot += 1;
-    }
-    
-    if (flags.markedDarkBlue) {
-      [markerDarkBlueImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, kDotWidth, kDotWidth)];
-      numOfDrawedDot += 1;
-    }
   }
-  
+
   NSUInteger n = [self.date day];
   NSString *dayText = [NSString stringWithFormat:@"%lu", (unsigned long)n];
   const char *day = [dayText cStringUsingEncoding:NSUTF8StringEncoding];
