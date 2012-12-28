@@ -54,12 +54,23 @@ extern const CGSize kTileSize;
     textColor = [UIColor darkGrayColor];
   }
   
+  static UIImage *redMarker;
+  static UIImage *orangeMarker;
+  static UIImage *greenMarker;
+  static UIImage *lightBlueMarker;
+  static UIImage *darkBlueMarker;
+  redMarker = [UIImage imageNamed:@"Kal.bundle/dotR"];
+  orangeMarker = [UIImage imageNamed:@"Kal.bundle/dotO"];
+  greenMarker = [UIImage imageNamed:@"Kal.bundle/dotG"];
+  lightBlueMarker = [UIImage imageNamed:@"Kal.bundle/dotLB"];
+  darkBlueMarker = [UIImage imageNamed:@"Kal.bundle/dotDB"];
+  
   NSArray *marker = @[
-  @{@"marked": [NSNumber numberWithInt:flags.markedRed], @"image": [UIImage imageNamed:@"Kal.bundle/dotR"]},
-  @{@"marked": [NSNumber numberWithInt:flags.markedOrange], @"image": [UIImage imageNamed:@"Kal.bundle/dotO"]},
-  @{@"marked": [NSNumber numberWithInt:flags.markedGreen], @"image": [UIImage imageNamed:@"Kal.bundle/dotG"]},
-  @{@"marked": [NSNumber numberWithInt:flags.markedLightBlue], @"image": [UIImage imageNamed:@"Kal.bundle/dotLB"]},
-  @{@"marked": [NSNumber numberWithInt:flags.markedDarkBlue], @"image": [UIImage imageNamed:@"Kal.bundle/dotDB"]}
+  @{@"marked": [NSNumber numberWithInt:flags.markedRed], @"image": redMarker},
+  @{@"marked": [NSNumber numberWithInt:flags.markedOrange], @"image": orangeMarker},
+  @{@"marked": [NSNumber numberWithInt:flags.markedGreen], @"image": greenMarker},
+  @{@"marked": [NSNumber numberWithInt:flags.markedLightBlue], @"image": lightBlueMarker},
+  @{@"marked": [NSNumber numberWithInt:flags.markedDarkBlue], @"image": darkBlueMarker}
   ];
 
   NSInteger numOfMarker = flags.markedRed + flags.markedLightBlue + flags.markedOrange + flags.markedGreen + flags.markedDarkBlue;
