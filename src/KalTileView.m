@@ -72,11 +72,6 @@ extern const CGSize kTileSize;
       numOfDrawedDot += 1;
     }
     
-    if (flags.markedLightBlue) {
-      [markerLightBlueImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, kDotWidth, kDotWidth)];
-      numOfDrawedDot += 1;
-    }
-    
     if (flags.markedOrange) {
       [markerOrangeImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, kDotWidth, kDotWidth)];
       numOfDrawedDot += 1;
@@ -84,6 +79,11 @@ extern const CGSize kTileSize;
     
     if (flags.markedGreen) {
       [markerGreenImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, kDotWidth, kDotWidth)];
+      numOfDrawedDot += 1;
+    }
+    
+    if (flags.markedLightBlue) {
+      [markerLightBlueImage drawInRect:CGRectMake((kTileWidth - kDotWidth * numOfMarker - kSpace * (numOfMarker - 1))/2.f + (kDotWidth + kSpace) * numOfDrawedDot, 5.f, kDotWidth, kDotWidth)];
       numOfDrawedDot += 1;
     }
     
