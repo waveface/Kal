@@ -80,8 +80,10 @@
 
 - (void)moveToMonthForDate:(NSDate *)date
 {
-  //self.baseDate = [date cc_dateByMovingToFirstDayOfTheMonth];
-  self.baseDate = date;
+  if (!self.selectedDate)
+    self.selectedDate = date;
+  
+  self.baseDate = [date cc_dateByMovingToFirstDayOfTheMonth];
   [self recalculateVisibleDays];
 }
 
