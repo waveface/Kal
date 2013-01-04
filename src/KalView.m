@@ -9,8 +9,14 @@
 #import "KalPrivate.h"
 
 @interface KalView ()
+{
+  BOOL WACalStyled;
+}
+
 - (void)addSubviewsToHeaderView:(UIView *)headerView;
 - (void)addSubviewsToContentView:(UIView *)contentView;
+- (void)WACal_addSubviewsToHeaderView:(UIView *)headerView;
+- (void)WACal_addSubviewsToContentView:(UIView *)contentView;
 - (void)setHeaderTitleText:(NSString *)text;
 @end
 
@@ -21,29 +27,47 @@ static const CGFloat kMonthLabelHeight = 17.f;
 
 @synthesize delegate, tableView;
 
-- (id)initWithFrame:(CGRect)frame delegate:(id<KalViewDelegate>)theDelegate logic:(KalLogic *)theLogic
+- (id)initWithFrame:(CGRect)frame delegate:(id<KalViewDelegate>)theDelegate logic:(KalLogic *)theLogic WACalStyle:(BOOL)WACalStyle
 {
+  WACalStyled = WACalStyle;
+  
   if ((self = [super initWithFrame:frame])) {
     delegate = theDelegate;
     logic = theLogic;
-    [logic addObserver:self forKeyPath:@"selectedMonthName" options:NSKeyValueObservingOptionNew context:NULL];
-    [logic addObserver:self forKeyPath:@"selectedYear" options:NSKeyValueObservingOptionNew context:NULL];
+    if (WACalStyle) {
+      [logic addObserver:self forKeyPath:@"selectedMonthName" options:NSKeyValueObservingOptionNew context:NULL];
+      [logic addObserver:self forKeyPath:@"selectedYear" options:NSKeyValueObservingOptionNew context:NULL];
+      
+    } else {
+      [logic addObserver:self forKeyPath:@"selectedMonthNameAndYear" options:NSKeyValueObservingOptionNew context:NULL];
+    }
     
     self.autoresizesSubviews = YES;
     self.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, frame.size.width, kHeaderHeight)];
     headerView.backgroundColor = [UIColor grayColor];
-    [self addSubviewsToHeaderView:headerView];
+    if (WACalStyle)
+      [self WACal_addSubviewsToHeaderView:headerView];
+    else
+      [self addSubviewsToHeaderView:headerView];
     [self addSubview:headerView];
     
     UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0.f, kHeaderHeight, frame.size.width, frame.size.height - kHeaderHeight)];
     contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    [self addSubviewsToContentView:contentView];
+    if (WACalStyle)
+      [self WACal_addSubviewsToContentView:contentView];
+    else
+      [self addSubviewsToContentView:contentView];
     [self addSubview:contentView];
   }
   
   return self;
+}
+
+- (id)initWithFrame:(CGRect)frame delegate:(id<KalViewDelegate>)theDelegate logic:(KalLogic *)theLogic
+{
+  return [self initWithFrame:frame delegate:theDelegate logic:theLogic WACalStyle:NO];
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -85,7 +109,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
 	return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
 }
 
-- (void)addSubviewsToHeaderView:(UIView *)headerView
+- (void)WACal_addSubviewsToHeaderView:(UIView *)headerView
 {
   const CGFloat kChangeMonthButtonWidth = 46.0f;
   const CGFloat kChangeMonthButtonHeight = 30.0f;
@@ -107,7 +131,6 @@ static const CGFloat kMonthLabelHeight = 17.f;
                                                kChangeMonthButtonWidth,
                                                kChangeMonthButtonHeight);
   UIButton *previousMonthButton = [[UIButton alloc] initWithFrame:previousMonthButtonFrame];
-  //previousMonthButton setImageEdgeInsets:<#(UIEdgeInsets)#>
   [previousMonthButton setAccessibilityLabel:NSLocalizedString(@"Previous month", nil)];
   [previousMonthButton setImage:[UIImage imageNamed:@"Kal.bundle/leftAR"] forState:UIControlStateNormal];
   previousMonthButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
@@ -205,7 +228,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
    
 }
 
-- (void)addSubviewsToContentView:(UIView *)contentView
+- (void)WACal_addSubviewsToContentView:(UIView *)contentView
 {
   // Both the tile grid and the list of events will automatically lay themselves
   // out to fit the # of weeks in the currently displayed month.
@@ -213,7 +236,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   CGRect fullWidthAutomaticLayoutFrame = CGRectMake(0.f, 0.f, self.width, 0.f);
 
   // The tile grid (the calendar body)
-  gridView = [[KalGridView alloc] initWithFrame:fullWidthAutomaticLayoutFrame logic:logic delegate:delegate];
+  gridView = [[KalGridView alloc] initWithFrame:fullWidthAutomaticLayoutFrame logic:logic delegate:delegate WACalStyle:YES];
   [gridView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:NULL];
   [contentView addSubview:gridView];
  
@@ -221,18 +244,112 @@ static const CGFloat kMonthLabelHeight = 17.f;
   tableView = [[UITableView alloc] initWithFrame:fullWidthAutomaticLayoutFrame style:UITableViewStylePlain];
   tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   [contentView addSubview:tableView];
+  
+  // Trigger the initial KVO update to finish the contentView layout
+  [gridView sizeToFit];
+  
+}
 
-  /*
+- (void)addSubviewsToHeaderView:(UIView *)headerView
+{
+  const CGFloat kChangeMonthButtonWidth = 46.0f;
+  const CGFloat kChangeMonthButtonHeight = 30.0f;
+  const CGFloat kMonthLabelWidth = 200.0f;
+  const CGFloat kHeaderVerticalAdjust = 3.f;
+  
+  // Header background gradient
+  UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Kal.bundle/kal_grid_background.png"]];
+  CGRect imageFrame = headerView.frame;
+  imageFrame.origin = CGPointZero;
+  backgroundView.frame = imageFrame;
+  [headerView addSubview:backgroundView];
+  
+  // Create the previous month button on the left side of the view
+  CGRect previousMonthButtonFrame = CGRectMake(self.left,
+                                               kHeaderVerticalAdjust,
+                                               kChangeMonthButtonWidth,
+                                               kChangeMonthButtonHeight);
+  UIButton *previousMonthButton = [[UIButton alloc] initWithFrame:previousMonthButtonFrame];
+  [previousMonthButton setAccessibilityLabel:NSLocalizedString(@"Previous month", nil)];
+  [previousMonthButton setImage:[UIImage imageNamed:@"Kal.bundle/kal_left_arrow.png"] forState:UIControlStateNormal];
+  previousMonthButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+  previousMonthButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+  [previousMonthButton addTarget:self action:@selector(showPreviousMonth) forControlEvents:UIControlEventTouchUpInside];
+  [headerView addSubview:previousMonthButton];
+  
+  // Draw the selected month name centered and at the top of the view
+  CGRect monthLabelFrame = CGRectMake((self.width/2.0f) - (kMonthLabelWidth/2.0f),
+                                      kHeaderVerticalAdjust,
+                                      kMonthLabelWidth,
+                                      kMonthLabelHeight);
+  headerTitleLabel = [[UILabel alloc] initWithFrame:monthLabelFrame];
+  headerTitleLabel.backgroundColor = [UIColor clearColor];
+  headerTitleLabel.font = [UIFont boldSystemFontOfSize:22.f];
+  headerTitleLabel.textAlignment = UITextAlignmentCenter;
+  headerTitleLabel.textColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Kal.bundle/kal_header_text_fill.png"]];
+  headerTitleLabel.shadowColor = [UIColor whiteColor];
+  headerTitleLabel.shadowOffset = CGSizeMake(0.f, 1.f);
+  [self setHeaderTitleText:[logic selectedMonthNameAndYear]];
+  [headerView addSubview:headerTitleLabel];
+  
+  // Create the next month button on the right side of the view
+  CGRect nextMonthButtonFrame = CGRectMake(self.width - kChangeMonthButtonWidth,
+                                           kHeaderVerticalAdjust,
+                                           kChangeMonthButtonWidth,
+                                           kChangeMonthButtonHeight);
+  UIButton *nextMonthButton = [[UIButton alloc] initWithFrame:nextMonthButtonFrame];
+  [nextMonthButton setAccessibilityLabel:NSLocalizedString(@"Next month", nil)];
+  [nextMonthButton setImage:[UIImage imageNamed:@"Kal.bundle/kal_right_arrow.png"] forState:UIControlStateNormal];
+  nextMonthButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+  nextMonthButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+  [nextMonthButton addTarget:self action:@selector(showFollowingMonth) forControlEvents:UIControlEventTouchUpInside];
+  [headerView addSubview:nextMonthButton];
+  
+  // Add column labels for each weekday (adjusting based on the current locale's first weekday)
+  NSArray *weekdayNames = [[[NSDateFormatter alloc] init] shortWeekdaySymbols];
+  NSArray *fullWeekdayNames = [[[NSDateFormatter alloc] init] standaloneWeekdaySymbols];
+  NSUInteger firstWeekday = [[NSCalendar currentCalendar] firstWeekday];
+  NSUInteger i = firstWeekday - 1;
+  for (CGFloat xOffset = 0.f; xOffset < headerView.width; xOffset += 46.f, i = (i+1)%7) {
+    CGRect weekdayFrame = CGRectMake(xOffset, 30.f, 46.f, kHeaderHeight - 29.f);
+    UILabel *weekdayLabel = [[UILabel alloc] initWithFrame:weekdayFrame];
+    weekdayLabel.backgroundColor = [UIColor clearColor];
+    weekdayLabel.font = [UIFont boldSystemFontOfSize:10.f];
+    weekdayLabel.textAlignment = UITextAlignmentCenter;
+    weekdayLabel.textColor = [UIColor colorWithRed:0.3f green:0.3f blue:0.3f alpha:1.f];
+    weekdayLabel.shadowColor = [UIColor whiteColor];
+    weekdayLabel.shadowOffset = CGSizeMake(0.f, 1.f);
+    weekdayLabel.text = [weekdayNames objectAtIndex:i];
+    [weekdayLabel setAccessibilityLabel:[fullWeekdayNames objectAtIndex:i]];
+    [headerView addSubview:weekdayLabel];
+  }
+}
+
+- (void)addSubviewsToContentView:(UIView *)contentView
+{
+  // Both the tile grid and the list of events will automatically lay themselves
+  // out to fit the # of weeks in the currently displayed month.
+  // So the only part of the frame that we need to specify is the width.
+  CGRect fullWidthAutomaticLayoutFrame = CGRectMake(0.f, 0.f, self.width, 0.f);
+  
+  // The tile grid (the calendar body)
+  gridView = [[KalGridView alloc] initWithFrame:fullWidthAutomaticLayoutFrame logic:logic delegate:delegate];
+  [gridView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:NULL];
+  [contentView addSubview:gridView];
+  
+  // The list of events for the selected day
+  tableView = [[UITableView alloc] initWithFrame:fullWidthAutomaticLayoutFrame style:UITableViewStylePlain];
+  tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+  [contentView addSubview:tableView];
+  
   // Drop shadow below tile grid and over the list of events for the selected day
   shadowView = [[UIImageView alloc] initWithFrame:fullWidthAutomaticLayoutFrame];
   shadowView.image = [UIImage imageNamed:@"Kal.bundle/kal_grid_shadow.png"];
   shadowView.height = shadowView.image.size.height;
   [contentView addSubview:shadowView];
-  */
   
   // Trigger the initial KVO update to finish the contentView layout
   [gridView sizeToFit];
-  
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -308,12 +425,23 @@ static const CGFloat kMonthLabelHeight = 17.f;
 
 - (void)markTilesForDates:(NSArray *)dates { [gridView markTilesForDates:dates]; }
 
+- (void)markTilesForDates:(NSArray *)dates WACalStyle:(BOOL)WACalStyle
+{
+  [gridView markTilesForDates:dates WACalStyle:WACalStyle];
+}
+
 - (KalDate *)selectedDate { return gridView.selectedDate; }
 
 - (void)dealloc
 {
-  [logic removeObserver:self forKeyPath:@"selectedMonthName"];
-  [logic removeObserver:self forKeyPath:@"selectedYear"];
+  if (WACalStyled) {
+    [logic removeObserver:self forKeyPath:@"selectedMonthName"];
+    [logic removeObserver:self forKeyPath:@"selectedYear"];
+  
+  } else {
+    [logic removeObserver:self forKeyPath:@"selectedMonthNameAndYear"];
+    
+  }
   
   [gridView removeObserver:self forKeyPath:@"frame"];
 }

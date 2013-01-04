@@ -33,8 +33,10 @@
 @property (unsafe_unretained, nonatomic, readonly) KalDate *selectedDate;
 
 - (id)initWithFrame:(CGRect)frame logic:(KalLogic *)logic delegate:(id<KalViewDelegate>)delegate;
+- (id)initWithFrame:(CGRect)frame logic:(KalLogic *)theLogic delegate:(id<KalViewDelegate>)theDelegate WACalStyle:(BOOL)WACalStyle;
 - (void)selectDate:(KalDate *)date;
 - (void)markTilesForDates:(NSArray *)dates;
+- (void)markTilesForDates:(NSArray *)dates WACalStyle:(BOOL)WACalStyle;
 
 // These 3 methods should be called *after* the KalLogic
 // has moved to the previous or following month.

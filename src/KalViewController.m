@@ -34,6 +34,10 @@ void mach_absolute_difference(uint64_t end, uint64_t start, struct timespec *tp)
 NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotification";
 
 @interface KalViewController ()
+{
+  BOOL WACalStyled;
+}
+
 @property (nonatomic, strong, readwrite) NSDate *initialDate;
 @property (nonatomic, strong, readwrite) NSDate *selectedDate;
 - (KalView*)calendarView;
@@ -43,8 +47,9 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 
 @synthesize dataSource, delegate, initialDate, selectedDate, frame;
 
-- (id)initWithSelectedDate:(NSDate *)date
+- (id)initWithSelectedDate:(NSDate *)date WACalStyle:(BOOL)WACalStyle
 {
+  WACalStyled = WACalStyle;
   if ((self = [super init])) {
     logic = [[KalLogic alloc] initForDate:date];
     self.initialDate = date;
@@ -53,6 +58,11 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:KalDataSourceChangedNotification object:nil];
   }
   return self;
+}
+
+- (id)initWithSelectedDate:(NSDate *)date
+{
+  return [self initWithSelectedDate:date WACalStyle:NO];
 }
 
 - (id)init
@@ -153,19 +163,30 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 - (void)loadedDataSource:(id<KalDataSource>)theDataSource;
 {
   NSArray *markedDates = [theDataSource markedDatesFrom:logic.fromDate to:logic.toDate];
-  NSMutableArray *dates = [NSMutableArray array];
-  for (NSDictionary *item in markedDates) {
-    NSMutableDictionary *newItem = [item mutableCopy];
-    NSDate *itemNSdate = item[@"date"];
+  if (WACalStyled) {
+    NSMutableArray *dates = [NSMutableArray array];
+    for (NSDictionary *item in markedDates) {
+      NSMutableDictionary *newItem = [item mutableCopy];
+      NSDate *itemNSdate = item[@"date"];
+      
+      if ([itemNSdate isKindOfClass:[NSDate class]])
+        newItem[@"date"] = [KalDate dateFromNSDate:itemNSdate];
+      
+      [dates addObject:newItem];
+    }
     
-    if ([itemNSdate isKindOfClass:[NSDate class]])
-      newItem[@"date"] = [KalDate dateFromNSDate:itemNSdate];
+    [[self calendarView] markTilesForDates:dates WACalStyle:YES];
   
-    [dates addObject:newItem];
+  } else {
+    NSMutableArray *dates = [markedDates mutableCopy];
+    for (int i=0; i<[dates count]; i++)
+      [dates replaceObjectAtIndex:i withObject:[KalDate dateFromNSDate:[dates objectAtIndex:i]]];
+    
+    [[self calendarView] markTilesForDates:dates];
+
   }
   
-  [[self calendarView] markTilesForDates:[dates copy]];
-  [self didSelectDate:self.calendarView.selectedDate];  
+  [self didSelectDate:self.calendarView.selectedDate];
 }
 
 // ---------------------------------------
@@ -201,6 +222,11 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
   return [self.calendarView.selectedDate NSDate];
 }
 
+- (void)applyWACalTableStyling
+{
+  tableView.backgroundColor = [UIColor colorWithRed:0.89f green:0.89f blue:0.89f alpha:1.f];
+	tableView.separatorColor = [UIColor whiteColor];
+}
 
 // -----------------------------------------------------------------------------------
 #pragma mark UIViewController
@@ -215,21 +241,24 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 {
   if (!self.title)
     self.title = @"Calendar";
-  KalView *kalView = [[KalView alloc] initWithFrame:frame delegate:self logic:logic];
+  KalView *kalView;
+  if (WACalStyled)
+    kalView = [[KalView alloc] initWithFrame:frame delegate:self logic:logic WACalStyle:YES];
+  else
+    kalView = [[KalView alloc] initWithFrame:frame delegate:self logic:logic];
   self.view = kalView;
   tableView = kalView.tableView;
   tableView.dataSource = dataSource;
   tableView.delegate = delegate;
-  tableView.backgroundColor = [UIColor colorWithRed:0.89f green:0.89f blue:0.89f alpha:1.f];
-  tableView.separatorColor = [UIColor whiteColor];
   [self reloadData];
 }
 
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  tableView.backgroundColor = [UIColor colorWithRed:0.89f green:0.89f blue:0.89f alpha:1.f];
-	tableView.separatorColor = [UIColor whiteColor];
+  
+  if (WACalStyled)
+    [self applyWACalTableStyling];
 }
 
 - (void)viewDidUnload

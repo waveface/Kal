@@ -57,9 +57,11 @@
 @property (unsafe_unretained, nonatomic, readonly) KalDate *selectedDate;
 
 - (id)initWithFrame:(CGRect)frame delegate:(id<KalViewDelegate>)delegate logic:(KalLogic *)logic;
+- (id)initWithFrame:(CGRect)frame delegate:(id<KalViewDelegate>)theDelegate logic:(KalLogic *)theLogic WACalStyle:(BOOL)WACalStyle;
 - (BOOL)isSliding;
 - (void)selectDate:(KalDate *)date;
 - (void)markTilesForDates:(NSArray *)dates;
+- (void)markTilesForDates:(NSArray *)dates WACalStyle:(BOOL)WACalStyle;
 - (void)redrawEntireMonth;
 - (void)showSelectedDate;
 

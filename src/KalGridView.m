@@ -22,6 +22,10 @@ const CGSize kTileSize = { 46.f, 44.f };
 static NSString *kSlideAnimationId = @"KalSwitchMonths";
 
 @interface KalGridView ()
+{
+  BOOL WACalStyled;
+}
+
 @property (nonatomic, strong) KalTileView *selectedTile;
 @property (nonatomic, strong) KalTileView *highlightedTile;
 - (void)swapMonthViews;
@@ -31,8 +35,10 @@ static NSString *kSlideAnimationId = @"KalSwitchMonths";
 
 @synthesize selectedTile, highlightedTile, transitioning;
 
-- (id)initWithFrame:(CGRect)frame logic:(KalLogic *)theLogic delegate:(id<KalViewDelegate>)theDelegate
+- (id)initWithFrame:(CGRect)frame logic:(KalLogic *)theLogic delegate:(id<KalViewDelegate>)theDelegate WACalStyle:(BOOL)WACalStyle
 {
+  WACalStyled = WACalStyle;
+  
   // MobileCal uses 46px wide tiles, with a 2px inner stroke 
   // along the top and right edges. Since there are 7 columns,
   // the width needs to be 46*7 (322px). But the iPhone's screen
@@ -49,21 +55,43 @@ static NSString *kSlideAnimationId = @"KalSwitchMonths";
     delegate = theDelegate;
     
     CGRect monthRect = CGRectMake(0.f, 0.f, frame.size.width, frame.size.height);
-    frontMonthView = [[KalMonthView alloc] initWithFrame:monthRect];
-    backMonthView = [[KalMonthView alloc] initWithFrame:monthRect];
+    if (WACalStyle) {
+      frontMonthView = [[KalMonthView alloc] initWithFrame:monthRect WACalStyle:WACalStyle];
+      backMonthView = [[KalMonthView alloc] initWithFrame:monthRect WACalStyle:WACalStyle];
+    
+    } else {
+      frontMonthView = [[KalMonthView alloc] initWithFrame:monthRect];
+      backMonthView = [[KalMonthView alloc] initWithFrame:monthRect];
+      
+    }
+    
     backMonthView.hidden = YES;
     [self addSubview:backMonthView];
     [self addSubview:frontMonthView];
 
     [self jumpToSelectedMonth];
   }
+  
   return self;
+}
+
+- (id)initWithFrame:(CGRect)frame logic:(KalLogic *)theLogic delegate:(id<KalViewDelegate>)theDelegate
+{
+  return [self initWithFrame:frame logic:theLogic delegate:theDelegate WACalStyle:NO];
 }
 
 - (void)drawRect:(CGRect)rect
 {
-  [[UIImage imageNamed:@"Kal.bundle/grid_background.png"] drawInRect:rect];
-  [[UIColor whiteColor] setFill];
+  if (WACalStyled) {
+    [[UIImage imageNamed:@"Kal.bundle/grid_background.png"] drawInRect:rect];
+    [[UIColor whiteColor] setFill];
+
+  } else {
+    [[UIImage imageNamed:@"Kal.bundle/kal_grid_background.png"] drawInRect:rect];
+    [[UIColor colorWithRed:0.63f green:0.65f blue:0.68f alpha:1.f] setFill];
+
+  }
+    
   CGRect line;
   line.origin = CGPointMake(0.f, self.height - 1.f);
   line.size = CGSizeMake(self.width, 1.f);
@@ -208,10 +236,16 @@ static NSString *kSlideAnimationId = @"KalSwitchMonths";
   
   [self swapMonthsAndSlide:direction keepOneRow:keepOneRow];
   
-  if (!self.selectedDate)
-    self.selectedTile = [frontMonthView tileForDate:[[KalDate class] dateFromNSDate:[logic selectedDate]]];
-  else
+  if (WACalStyled) {
+    if (!self.selectedDate)
+      self.selectedTile = [frontMonthView tileForDate:[[KalDate class] dateFromNSDate:[logic selectedDate]]];
+    else
+      self.selectedTile = [frontMonthView firstTileOfMonth];
+
+  } else {
     self.selectedTile = [frontMonthView firstTileOfMonth];
+
+  }
 }
 
 - (void)slideUp { [self slide:SLIDE_UP]; }
@@ -244,6 +278,11 @@ static NSString *kSlideAnimationId = @"KalSwitchMonths";
 }
 
 - (void)markTilesForDates:(NSArray *)dates { [frontMonthView markTilesForDates:dates]; }
+
+- (void)markTilesForDates:(NSArray *)dates WACalStyle:(BOOL)WACalStyle
+{
+  [frontMonthView markTilesForDates:dates WACalStyle:WACalStyle];
+}
 
 - (KalDate *)selectedDate { return selectedTile.date; }
 

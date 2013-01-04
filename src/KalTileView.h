@@ -21,6 +21,7 @@ typedef char KalTileType;
   struct {
     unsigned int selected : 1;
     unsigned int highlighted : 1;
+    unsigned int marked : 1;
     unsigned int markedRed : 1;
     unsigned int markedLightBlue : 1;
     unsigned int markedOrange : 1;
@@ -33,6 +34,7 @@ typedef char KalTileType;
 @property (nonatomic, strong) KalDate *date;
 @property (nonatomic, getter=isHighlighted) BOOL highlighted;
 @property (nonatomic, getter=isSelected) BOOL selected;
+@property (nonatomic, getter=isMarked) BOOL marked;
 @property (nonatomic, getter=isMarkedRed) BOOL markedRed;
 @property (nonatomic, getter=isMarkedLightBlue) BOOL markedLightBlue;
 @property (nonatomic, getter=isMarkedOrange) BOOL markedOrange;
@@ -43,5 +45,6 @@ typedef char KalTileType;
 - (void)resetState;
 - (BOOL)isToday;
 - (BOOL)belongsToAdjacentMonth;
+- (id)initWithFrame:(CGRect)frame WACalStyle:(BOOL)WACalStyle;
 
 @end
