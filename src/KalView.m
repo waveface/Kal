@@ -8,6 +8,8 @@
 #import "KalLogic.h"
 #import "KalPrivate.h"
 
+#define IS_WIDESCREEN ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )568 ) < DBL_EPSILON )
+
 @interface KalView ()
 - (void)addSubviewsToHeaderView:(UIView *)headerView;
 - (void)addSubviewsToContentView:(UIView *)contentView;
@@ -17,12 +19,26 @@
 static const CGFloat kHeaderHeight = 44.f;
 static const CGFloat kMonthLabelHeight = 17.f;
 
-@implementation KalView
+@implementation KalView {
+  CGFloat headerHeight;
+  CGFloat yearMonthHeaderHeight;
+  CGFloat weekdayHeaderHeight;
+}
 
 @synthesize delegate, tableView;
 
 - (id)initWithFrame:(CGRect)frame delegate:(id<KalViewDelegate>)theDelegate logic:(KalLogic *)theLogic
 {
+  
+  if ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) || IS_WIDESCREEN) {
+    headerHeight = 57.0f;
+    yearMonthHeaderHeight = 40.0f;
+  } else {
+    headerHeight = 44.0f;
+    yearMonthHeaderHeight = 27.0f;
+  }
+  weekdayHeaderHeight = headerHeight - yearMonthHeaderHeight;
+  
   if ((self = [super initWithFrame:frame])) {
     delegate = theDelegate;
     logic = theLogic;
@@ -32,12 +48,12 @@ static const CGFloat kMonthLabelHeight = 17.f;
     self.autoresizesSubviews = YES;
     self.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, frame.size.width, kHeaderHeight)];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, frame.size.width, headerHeight)];
     headerView.backgroundColor = [UIColor grayColor];
     [self addSubviewsToHeaderView:headerView];
     [self addSubview:headerView];
     
-    UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0.f, kHeaderHeight, frame.size.width, frame.size.height - kHeaderHeight)];
+    UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0.f, headerHeight, frame.size.width, frame.size.height - headerHeight)];
     contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [self addSubviewsToContentView:contentView];
     [self addSubview:contentView];
@@ -88,10 +104,8 @@ static const CGFloat kMonthLabelHeight = 17.f;
 - (void)addSubviewsToHeaderView:(UIView *)headerView
 {
   const CGFloat kChangeMonthButtonWidth = 46.0f;
-  const CGFloat kChangeMonthButtonHeight = 30.0f;
   const CGFloat kMonthLabelWidth = 100.f;
   const CGFloat kYearLabelWidth = 36.f;
-  const CGFloat kHeaderVerticalAdjust = 5.f;
   
   // Header background gradient
   UIImageView *backgroundView = [[UIImageView alloc] init];
@@ -105,7 +119,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   CGRect previousMonthButtonFrame = CGRectMake(0,
                                                0,
                                                kChangeMonthButtonWidth,
-                                               kChangeMonthButtonHeight);
+                                               yearMonthHeaderHeight);
   UIButton *previousMonthButton = [[UIButton alloc] initWithFrame:previousMonthButtonFrame];
   //previousMonthButton setImageEdgeInsets:<#(UIEdgeInsets)#>
   [previousMonthButton setAccessibilityLabel:NSLocalizedString(@"Previous month", nil)];
@@ -117,9 +131,9 @@ static const CGFloat kMonthLabelHeight = 17.f;
   
   // Draw the selected month name centered and at the top of the view
   CGRect monthLabelFrame = CGRectMake(kChangeMonthButtonWidth,
-                                      kHeaderVerticalAdjust,
+                                      0,
                                       kMonthLabelWidth,
-                                      kMonthLabelHeight);
+                                      yearMonthHeaderHeight);
   headerMonthTitleLabel = [[UILabel alloc] initWithFrame:monthLabelFrame];
   headerMonthTitleLabel.backgroundColor = [UIColor clearColor];
   headerMonthTitleLabel.font = [UIFont boldSystemFontOfSize:16.f];
@@ -132,7 +146,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   CGRect nextMonthButtonFrame = CGRectMake(kChangeMonthButtonWidth + kMonthLabelWidth,
                                            0,
                                            kChangeMonthButtonWidth,
-                                           kChangeMonthButtonHeight);
+                                           yearMonthHeaderHeight);
   UIButton *nextMonthButton = [[UIButton alloc] initWithFrame:nextMonthButtonFrame];
   [nextMonthButton setAccessibilityLabel:NSLocalizedString(@"Next month", nil)];
   [nextMonthButton setImage:[UIImage imageNamed:@"Kal.bundle/rightAR"] forState:UIControlStateNormal];
@@ -145,7 +159,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   CGRect previousYearButtonFrame = CGRectMake(self.width - kChangeMonthButtonWidth * 2 - kYearLabelWidth,
                                               0,
                                               kChangeMonthButtonWidth,
-                                              kChangeMonthButtonHeight);
+                                              yearMonthHeaderHeight);
   UIButton *previousYearButton = [[UIButton alloc] initWithFrame:previousYearButtonFrame];
   [previousYearButton setAccessibilityLabel:NSLocalizedString(@"Previous month", nil)];
   [previousYearButton setImage:[UIImage imageNamed:@"Kal.bundle/leftAR"] forState:UIControlStateNormal];
@@ -156,9 +170,9 @@ static const CGFloat kMonthLabelHeight = 17.f;
   
   // Draw the selected month name centered and at the top of the view
   CGRect yearLabelFrame = CGRectMake(self.width - kChangeMonthButtonWidth - kYearLabelWidth,
-                                     kHeaderVerticalAdjust,
-                                     kMonthLabelWidth,
-                                     kMonthLabelHeight);
+                                     0,
+                                     kYearLabelWidth,
+                                     yearMonthHeaderHeight);
   headerYearTitleLabel = [[UILabel alloc] initWithFrame:yearLabelFrame];
   headerYearTitleLabel.backgroundColor = [UIColor clearColor];
   headerYearTitleLabel.font = [UIFont boldSystemFontOfSize:16.f];
@@ -171,7 +185,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   CGRect nextYearButtonFrame = CGRectMake(self.width - kChangeMonthButtonWidth,
                                           0,
                                           kChangeMonthButtonWidth,
-                                          kChangeMonthButtonHeight);
+                                          yearMonthHeaderHeight);
   UIButton *nextYearButton = [[UIButton alloc] initWithFrame:nextYearButtonFrame];
   [nextYearButton setAccessibilityLabel:NSLocalizedString(@"Next month", nil)];
   [nextYearButton setImage:[UIImage imageNamed:@"Kal.bundle/rightAR"] forState:UIControlStateNormal];
@@ -186,7 +200,7 @@ static const CGFloat kMonthLabelHeight = 17.f;
   NSUInteger firstWeekday = [[NSCalendar currentCalendar] firstWeekday];
   NSUInteger i = firstWeekday - 1;
   for (CGFloat xOffset = 0.f; xOffset < headerView.width; xOffset += floorf(self.width/7.f), i = (i+1)%7) {
-    CGRect weekdayFrame = CGRectMake(xOffset, 30.f, floorf(self.width/7.f), kHeaderHeight - 29.f);
+    CGRect weekdayFrame = CGRectMake(xOffset, yearMonthHeaderHeight+1, floorf(self.width/7.f), weekdayHeaderHeight);
     UILabel *weekdayLabel = [[UILabel alloc] initWithFrame:weekdayFrame];
     weekdayLabel.backgroundColor = [UIColor colorWithRed:0.757f green:0.757f blue:0.757f alpha:1.f];
     weekdayLabel.font = [UIFont boldSystemFontOfSize:10.f];
@@ -280,7 +294,6 @@ static const CGFloat kMonthLabelHeight = 17.f;
   const CGFloat kMonthLabelWidth = 100.f;
   
   [headerMonthTitleLabel setText:text];
-  [headerMonthTitleLabel sizeToFit];
   headerMonthTitleLabel.left = kChangeMonthButtonWidth + kMonthLabelWidth/2.f - headerMonthTitleLabel.width/2.f;
 }
 
@@ -290,7 +303,6 @@ static const CGFloat kMonthLabelHeight = 17.f;
   const CGFloat kYearLabelWidth = 36.f;
   
   [headerYearTitleLabel setText:text];
-  [headerYearTitleLabel sizeToFit];
   headerYearTitleLabel.left = self.width - kChangeMonthButtonWidth - kYearLabelWidth;
 }
 
