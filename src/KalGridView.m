@@ -145,6 +145,7 @@ static NSString *kSlideAnimationId = @"KalSwitchMonths";
       self.selectedTile = [frontMonthView tileForDate:tile.date];
     } else {
       self.selectedTile = tile;
+      [delegate didTouchDate:tile.date];
     }
   }
   self.highlightedTile = nil;

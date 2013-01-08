@@ -115,6 +115,13 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
   self.selectedDate = [date NSDate];
 }
 
+- (void)didTouchDate:(KalDate *)date {
+
+  if ([self.delegate respondsToSelector:@selector(kalDidSelectOnDate:)])
+    [self.delegate kalDidSelectOnDate:[date NSDate]];
+  
+}
+
 - (void)showPreviousMonth
 {
   [self clearTable];
@@ -165,7 +172,7 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
   }
   
   [[self calendarView] markTilesForDates:[dates copy]];
-  [self didSelectDate:self.calendarView.selectedDate];  
+  [self didSelectDate:self.calendarView.selectedDate];
 }
 
 // ---------------------------------------

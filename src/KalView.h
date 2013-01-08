@@ -82,5 +82,6 @@
 - (void)showPreviousYear;
 - (void)showFollowingYear;
 - (void)didSelectDate:(KalDate *)date;
+- (void)didTouchDate:(KalDate *)date;
 
 @end

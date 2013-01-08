@@ -4,8 +4,17 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "Kal.h"
 #import "KalView.h"       // for the KalViewDelegate protocol
 #import "KalDataSource.h" // for the KalDataSourceCallbacks protocol
+
+
+@protocol KalDelegate
+
+@optional
+- (void) kalDidSelectOnDate:(NSDate*)date;
+
+@end
 
 @class KalLogic, KalDate;
 
@@ -24,13 +33,13 @@
 {
   KalLogic *logic;
   UITableView *tableView;
-  id <UITableViewDelegate> __unsafe_unretained delegate;
+  id <UITableViewDelegate, KalDelegate> __unsafe_unretained delegate;
   id <KalDataSource> __unsafe_unretained dataSource;
   NSDate *initialDate;                    // The date that the calendar was initialized with *or* the currently selected date when the view hierarchy was torn down in order to satisfy a low memory warning.
   NSDate *selectedDate;                   // I cache the selected date because when we respond to a memory warning, we cannot rely on the view hierarchy still being alive, and thus we cannot always derive the selected date from KalView's selectedDate property.
 }
 
-@property (nonatomic, unsafe_unretained) id<UITableViewDelegate> delegate;
+@property (nonatomic, unsafe_unretained) id<UITableViewDelegate, KalDelegate> delegate;
 @property (nonatomic, unsafe_unretained) id<KalDataSource> dataSource;
 @property (nonatomic, strong) NSDate *selectedNSDate;
 @property (nonatomic, assign) CGRect frame;
