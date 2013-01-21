@@ -19,6 +19,7 @@
 - (NSDate *)cc_dateByMovingToFirstDayOfSameMonthOfTheFollowingYear;
 - (NSDateComponents *)cc_componentsForMonthDayAndYear;
 - (NSUInteger)cc_weekday;
+- (NSUInteger)cc_numberOfWeeksInMonth;
 - (NSUInteger)cc_numberOfDaysInMonth;
 
 @end

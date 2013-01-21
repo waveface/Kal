@@ -73,6 +73,11 @@
   return [[NSCalendar currentCalendar] ordinalityOfUnit:NSDayCalendarUnit inUnit:NSWeekCalendarUnit forDate:self];
 }
 
+- (NSUInteger)cc_numberOfWeeksInMonth
+{
+  return [[NSCalendar currentCalendar] rangeOfUnit:NSWeekCalendarUnit inUnit:NSMonthCalendarUnit forDate:self].length;
+}
+
 - (NSUInteger)cc_numberOfDaysInMonth
 {
   return [[NSCalendar currentCalendar] rangeOfUnit:NSDayCalendarUnit inUnit:NSMonthCalendarUnit forDate:self].length;

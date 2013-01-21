@@ -149,7 +149,14 @@
   NSDateComponents *c = [self.baseDate cc_componentsForMonthDayAndYear];
   c.day = [self.baseDate cc_numberOfDaysInMonth];
   NSDate *lastDayOfTheMonth = [[NSCalendar currentCalendar] dateFromComponents:c];
-  return 7 - [lastDayOfTheMonth cc_weekday];
+  NSUInteger remainingInWeek = 7 - [lastDayOfTheMonth cc_weekday];
+  NSUInteger numOfWeeks = [self.baseDate cc_numberOfWeeksInMonth];
+  if (numOfWeeks == 4)
+    return remainingInWeek + 14;
+  else if (numOfWeeks == 5)
+    return remainingInWeek + 7;
+  else
+    return remainingInWeek;
 }
 
 - (NSArray *)calculateDaysInFinalWeekOfPreviousMonth

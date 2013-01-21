@@ -234,7 +234,8 @@ static const CGFloat kMonthLabelHeight = 17.f;
   // The list of events for the selected day
   tableView = [[UITableView alloc] initWithFrame:fullWidthAutomaticLayoutFrame style:UITableViewStylePlain];
   tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-  [contentView addSubview:tableView];
+  // remove tableView since it is not used in date picker mode
+  // [contentView addSubview:tableView];
 
   /*
   // Drop shadow below tile grid and over the list of events for the selected day

@@ -18,6 +18,7 @@
 #define SLIDE_DOWN 2
 
 const CGSize kTileSize = { 46.f, 44.f };
+const NSUInteger kMaxRowToDisplay = 6;
 
 static NSString *kSlideAnimationId = @"KalSwitchMonths";
 
@@ -72,7 +73,8 @@ static NSString *kSlideAnimationId = @"KalSwitchMonths";
 
 - (void)sizeToFit
 {
-  self.height = frontMonthView.height;
+  self.height = kMaxRowToDisplay * kTileSize.height;
+  //  self.height = frontMonthView.height;
 }
 
 #pragma mark -
@@ -164,8 +166,9 @@ static NSString *kSlideAnimationId = @"KalSwitchMonths";
       ? frontMonthView.bottom - kTileSize.height
       : frontMonthView.bottom;
   } else if (direction == SLIDE_DOWN) {
-    NSUInteger numWeeksToKeep = keepOneRow ? 1 : 0;
-    NSInteger numWeeksToSlide = [backMonthView numWeeks] - numWeeksToKeep;
+//    NSUInteger numWeeksToKeep = keepOneRow ? 1 : 0;
+//    NSInteger numWeeksToSlide = [backMonthView numWeeks] - numWeeksToKeep;
+    NSUInteger numWeeksToSlide = 6;// we always show 6 rows in the calendar
     backMonthView.top = -numWeeksToSlide * kTileSize.height;
   } else {
     backMonthView.top = 0.f;
@@ -184,7 +187,7 @@ static NSString *kSlideAnimationId = @"KalSwitchMonths";
     frontMonthView.alpha = 0.f;
     backMonthView.alpha = 1.f;
     
-    self.height = backMonthView.height;
+    //self.height = backMonthView.height;
     
     [self swapMonthViews];
   } [UIView commitAnimations];
@@ -206,7 +209,7 @@ static NSString *kSlideAnimationId = @"KalSwitchMonths";
   
   BOOL keepOneRow = (direction == SLIDE_UP && [logic.daysInFinalWeekOfPreviousMonth count] > 0)
                  || (direction == SLIDE_DOWN && [logic.daysInFirstWeekOfFollowingMonth count] > 0);
-  
+
   [self swapMonthsAndSlide:direction keepOneRow:keepOneRow];
   
   if (!self.selectedDate)
