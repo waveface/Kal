@@ -168,7 +168,7 @@ static NSString *kSlideAnimationId = @"KalSwitchMonths";
   } else if (direction == SLIDE_DOWN) {
 //    NSUInteger numWeeksToKeep = keepOneRow ? 1 : 0;
 //    NSInteger numWeeksToSlide = [backMonthView numWeeks] - numWeeksToKeep;
-    NSUInteger numWeeksToSlide = 6;// we always show 6 rows in the calendar
+    NSInteger numWeeksToSlide = kMaxRowToDisplay;// we always show 6 rows in the calendar
     backMonthView.top = -numWeeksToSlide * kTileSize.height;
   } else {
     backMonthView.top = 0.f;
