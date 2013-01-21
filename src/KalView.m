@@ -30,13 +30,15 @@ static const CGFloat kMonthLabelHeight = 17.f;
 - (id)initWithFrame:(CGRect)frame delegate:(id<KalViewDelegate>)theDelegate logic:(KalLogic *)theLogic
 {
   
-  if ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) || IS_WIDESCREEN) {
-    headerHeight = 57.0f;
-    yearMonthHeaderHeight = 40.0f;
-  } else {
-    headerHeight = 44.0f;
-    yearMonthHeaderHeight = 27.0f;
-  }
+//  if ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) || IS_WIDESCREEN) {
+//    headerHeight = 57.0f;
+//    yearMonthHeaderHeight = 40.0f;
+//  } else {
+//    headerHeight = 44.0f;
+//    yearMonthHeaderHeight = 27.0f;
+//  }
+  headerHeight = 57.0f;
+  yearMonthHeaderHeight = 40.0f;
   weekdayHeaderHeight = headerHeight - yearMonthHeaderHeight;
   
   if ((self = [super initWithFrame:frame])) {
